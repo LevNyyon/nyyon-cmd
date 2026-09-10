@@ -29,6 +29,18 @@ export const tools = {
     run: async (env, input) => deleteHeartbeatSource(env, input.id),
   },
   // ── Heartbeat — industry awareness (OSINT v2) ─────────────
+  run_heartbeat: {
+    def: {
+      name: 'run_heartbeat',
+      description: "Fetch the topic feed's sources NOW (all enabled RSS/Google-News sources), score the new items, and report counts. Use when the operator adds sources and wants the feed filled without waiting for the hourly tick, or asks to refresh the feed.",
+      input_schema: { type: 'object', properties: {}, required: [] },
+    },
+    run: async (env) => {
+      const { runHeartbeat } = await import('../lib/heartbeat.js');
+      const r = await runHeartbeat(env, { actor: 'nyo' });
+      return { inserted: r.inserted ?? 0, scored: r.scored ?? 0, note: 'new items land on the Hot Takes feed once scored' };
+    },
+  },
   industry_pulse: {
     def: {
       name: 'industry_pulse',
