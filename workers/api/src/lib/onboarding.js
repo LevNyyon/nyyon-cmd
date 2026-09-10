@@ -63,7 +63,9 @@ export async function saveAndVerifyLlmKey(env, { key, provider = 'anthropic' }) 
     // verified either ("local model unavailable"), so one typo locks the
     // operator out of the step with an error about a fallback they have never
     // heard of. A key check is a probe, not production traffic.
-    const r = await llmTransportAnthropic(env, {
+    // Verify with the key JUST PASTED: it lives in the database, not in env,
+    // and a fresh deploy has no env key at all.
+    const r = await llmTransportAnthropic({ ...env, [field]: clean }, {
       model: env.ANTHROPIC_MODEL || 'claude-opus-5',
       max_tokens: 8,
       messages: [{ role: 'user', content: 'ok' }],
