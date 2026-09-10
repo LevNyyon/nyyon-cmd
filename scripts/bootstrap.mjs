@@ -52,6 +52,17 @@ if (!accountId) {
 process.env.CLOUDFLARE_ACCOUNT_ID = accountId;
 console.log(`account: ${accountId}`);
 
+// Write YOUR account id + worker name into wrangler.jsonc BEFORE creating
+// anything: wrangler reads account_id from the config, and the shipped file
+// carries a placeholder from another account until this line runs.
+const cfgPath0 = join(api, 'wrangler.jsonc');
+{
+  let c = readFileSync(cfgPath0, 'utf8');
+  c = c.replace(/"name":\s*"[^"]+"/, `"name": "${name}"`);
+  c = c.replace(/"account_id":\s*"[0-9a-f]{32}"/, `"account_id": "${accountId}"`);
+  writeFileSync(cfgPath0, c);
+}
+
 // ── 1. D1 database (create or reuse) ─────────────────────────────
 step(`D1 database "${dbName}"`);
 let dbId = null;
@@ -86,8 +97,6 @@ catch (e) {
 step('patching workers/api/wrangler.jsonc');
 const cfgPath = join(api, 'wrangler.jsonc');
 let cfg = readFileSync(cfgPath, 'utf8');
-cfg = cfg.replace(/"name":\s*"[^"]+"/, `"name": "${name}"`);
-cfg = cfg.replace(/"account_id":\s*"[0-9a-f]{32}"/, `"account_id": "${accountId}"`);
 cfg = cfg.replace(/"database_name":\s*"[^"]+"/, `"database_name": "${dbName}"`);
 cfg = cfg.replace(/"database_id":\s*"[^"]+"/, `"database_id": "${dbId}"`);
 cfg = cfg.replace(/"bucket_name":\s*"[^"]+"/, `"bucket_name": "${bucket}"`);
