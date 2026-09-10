@@ -76,7 +76,6 @@
     // Nyo chat Mid/High switch (chat only; digest/AEO still use ANTHROPIC_MODEL).
     "NYO_MODEL_MID":   "claude-sonnet-5",
     "NYO_MODEL_HIGH":  "claude-opus-4-8",
-    "WEBSITE_BASE_URL": "https://nyyon.com",
     // Plugin publishing (repo + token) is configured at runtime in
     // Settings → Plugin publishing — never baked here, so forks stay clean.
   },

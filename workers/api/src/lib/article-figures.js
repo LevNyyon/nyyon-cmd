@@ -286,6 +286,33 @@ function embedFigures(body, figures) {
 // Strip en/em dashes from every string in a figure/cover slot tree before it is
 // rendered into a PNG. The body strip can't fix text baked into an image, so the
 // no-dash rule has to be enforced here too (deep walk: strings, arrays, objects).
+
+// The operator's brand for rendered cards: company name from the social
+// identities doc, else the company profile, else blank. The site stamp is
+// this install's own site host. Never a hardcoded brand.
+async function operatorBrand(env) {
+  let name = '';
+  try {
+    const { readKnowledge } = await import('./db.js');
+    const ids = await readKnowledge(env, 'hottakes-social-identities');
+    const m = String(ids?.body || '').match(/```json\s*([\s\S]*?)```/);
+    const co = m ? (JSON.parse(m[1])['linkedin-company'] || {}) : {};
+    if (co.name && !/your company/i.test(co.name)) name = String(co.name);
+    if (!name) {
+      const about = await readKnowledge(env, 'about');
+      const am = String(about?.body || '').match(/Company name\*?\*?\s*[—:-]\s*(.+)/);
+      if (am) name = am[1].trim();
+    }
+  } catch { /* blank brand beats a wrong brand */ }
+  let site = '';
+  try {
+    const { siteBase } = await import('./self-origin.js');
+    const b = siteBase(env);
+    if (b) site = new URL(b).host.toUpperCase();
+  } catch { /* no site stamp */ }
+  return { name, site };
+}
+
 function stripSlots(v) {
   if (v == null) return v;
   if (typeof v === 'string') return stripDashes(v);
@@ -385,11 +412,13 @@ export async function generateArticleFigures(env, opts = {}) {
     let featuredUrl = (figures.find((f) => f.featured) || figures[0]).url;
     let coverUrl = null;
     try {
+      const brand = await operatorBrand(env);
       const coverSvg = FEATURED_TEMPLATE.build(stripSlots({
-        kicker:    cover?.kicker || (Array.isArray(post.tags) ? post.tags[0] : null) || 'NYYON',
+        kicker:    cover?.kicker || (Array.isArray(post.tags) ? post.tags[0] : null) || brand.name || 'BRIEF',
         title:     post.title,
         highlight: cover?.highlight || '',
         sub:       cover?.sub || post.excerpt || '',
+        site:      brand.site,
       }));
       const coverPng = await renderPng(coverSvg, FEATURED_TEMPLATE.width);
       const coverKey = `blog-figures/${post.slug}-cover.png`;

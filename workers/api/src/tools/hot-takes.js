@@ -402,7 +402,7 @@ export const tools = {
         title: view.article.title,
         excerpt: view.article.excerpt,
         tags: view.article.tags,
-        url: blogUrl(view.article.slug),
+        url: blogUrl(env, view.article.slug),
         bodyHtml: view.article.body,
       };
       // `channel` narrows to a single-leg redraft (the unit's Redraft button);
@@ -474,7 +474,7 @@ export const tools = {
   hottake_publish_website: {
     def: {
       name: 'hottake_publish_website',
-      description: 'Publish the package\'s article to nyyon.com NOW through the shared blog pipeline (edge-rendered, live in ~60s). REAL regardless of the hottakes.live flag — same trust level as the Blog page\'s Approve button. Only the LinkedIn legs are flag-gated.',
+      description: 'Publish the package\'s article NOW through the website webhook (edge-rendered, live in ~60s). REAL regardless of the hottakes.live flag — same trust level as the Blog page\'s Approve button. Only the LinkedIn legs are flag-gated.',
       input_schema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] },
     },
     run: async (env, input) => publishWebsite(env, input.id, { actor: input.actor || 'operator' }),

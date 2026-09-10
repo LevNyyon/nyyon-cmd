@@ -300,7 +300,7 @@ const LOGIN_HTML = `<!doctype html>
       <div class="eyebrow">Command Center</div>
     </div>
     <label for="u">Email</label>
-    <input id="u" name="u" type="email" autocomplete="username" placeholder="you@nyyon.com" autofocus>
+    <input id="u" name="u" type="email" autocomplete="username" placeholder="you@company.com" autofocus>
     <label for="p">Password</label>
     <input id="p" name="p" type="password" autocomplete="current-password" placeholder="••••••••">
     <button id="b" type="submit">Sign in</button>

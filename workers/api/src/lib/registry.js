@@ -53,7 +53,7 @@ const WORKFLOWS = [
     steps: 'scan calendar_events, WhatsApp the operator a reminder N minutes before a meeting (no-op until a reminder chat is set)',
     touches: 'calendar_events, wa (via outbox)', knowledge: [], run_slug: 'meeting-reminders' },
   { name: 'Daily AEO publish', kind: 'automated', trigger: 'cron · 0 6 * * *',
-    steps: 'publish any AEO article whose interview is captured + scheduled straight to nyyon.com (readyOnly — never auto-interviews or nags, never double-posts)',
+    steps: 'publish any AEO article whose interview is captured + scheduled straight to the website (readyOnly — never auto-interviews or nags, never double-posts)',
     touches: 'aeo_questions, blog_posts',
     knowledge: ['nyyon-brand-voice', 'nyyon-voice-lev', 'nyyon-aeo-playbook', 'nyyon-brand'], run_slug: 'aeo-daily-writer' },
 
@@ -101,7 +101,7 @@ const WORKFLOWS = [
     steps: 'ask the weekly questions → derive the week\'s article slate → schedule each across the week + create calendar events',
     touches: 'brain_sessions, aeo_questions, calendar_events', knowledge: ['nyyon-brand-voice'] },
   { name: 'Blog publish → prod', kind: 'on-demand', trigger: 'on-demand · Publish button / Nyo',
-    steps: 'render the article + push it to nyyon.com through the publish sidecar, then mirror it to the calendar',
+    steps: 'render the article + deliver it through the website webhook, then mirror it to the calendar',
     touches: 'blog_posts, calendar_events', knowledge: [] },
 ];
 

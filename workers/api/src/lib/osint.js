@@ -15,7 +15,7 @@ import { now, uid, safeJSON } from './util.js';
 import { logEvent } from './db.js';
 import { fetchText as webFetchText, head as webHead } from './web-gateway.js';
 
-const UA = 'nyyon-osint/0.1 (https://nyyon.com; contact: hello@nyyon.com)';
+const UA = 'nyyon-cmd/0.1 (self-hosted command center)';
 
 // ─── helpers ────────────────────────────────────────────────
 async function sha1Hex(str) {

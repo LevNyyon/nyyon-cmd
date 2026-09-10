@@ -31,7 +31,10 @@ const genId = (prefix) => `${prefix}_${uid().replace(/-/g, '').slice(0, 12)}`;
 
 // One definition of the public article URL — used by scheduling, publishing,
 // the calendar mirror, and the social-draft prompt (no scattered copies).
-export const blogUrl = (slug) => `https://nyyon.com/blog/${slug}/`;
+// Based on the operator's own site (WEBSITE_BASE_URL, else this install's
+// origin) — never a hardcoded domain.
+import { siteBase } from './self-origin.js';
+export const blogUrl = (env, slug) => `${siteBase(env)}/blog/${slug}/`;
 
 // ── live/dry-run gate ───────────────────────────────────────────────────────
 // Explicit flag wins both ways. With NO flag set, configuring the social
@@ -250,7 +253,7 @@ export async function ensurePackageForSlug(env, slug, actor = 'operator') {
     title: post.title, headline: post.title, intro: post.excerpt || null,
     status: isLive ? 'published' : 'ready',
     website_status: isLive ? 'published' : 'not_planned',
-    website_url: isLive ? blogUrl(slug) : null,
+    website_url: isLive ? blogUrl(env, slug) : null,
     pinned: 0, actor,
   });
   // Adoption is its own transition (distinct from a topic being added) — make
@@ -720,7 +723,7 @@ export async function scheduleRelease(env, id, { website_at, company_at, persona
       status: 'confirmed',
       source: 'hottake',
       source_ref: id,
-      link_url: pkg.blog_slug ? blogUrl(pkg.blog_slug) : null,
+      link_url: pkg.blog_slug ? blogUrl(env, pkg.blog_slug) : null,
       created_by: 'system',
     });
   } catch { /* best-effort */ }
@@ -756,7 +759,7 @@ export async function cancelSchedule(env, id, actor = 'operator') {
       status: 'cancelled',
       source: 'hottake',
       source_ref: id,
-      link_url: pkg.blog_slug ? blogUrl(pkg.blog_slug) : null,
+      link_url: pkg.blog_slug ? blogUrl(env, pkg.blog_slug) : null,
       created_by: 'system',
     });
   } catch { /* best-effort */ }
@@ -868,7 +871,7 @@ export async function postLeg(env, postId, { actor = 'operator' } = {}) {
         title: `${post.channel}: ${imageTitle || post.package_id}`,
         starts_at: t, all_day: false, status: 'done',
         source: 'hottake', source_ref: postId,
-        link_url: pkg?.website_url || (pkg?.blog_slug ? blogUrl(pkg.blog_slug) : null),
+        link_url: pkg?.website_url || (pkg?.blog_slug ? blogUrl(env, pkg.blog_slug) : null),
         platform: 'linkedin', body: post.body, created_by: 'system',
       });
     } catch { /* best-effort */ }

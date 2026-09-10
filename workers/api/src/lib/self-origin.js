@@ -18,3 +18,13 @@ export function assetsBase(env) {
   if (configured) return configured;
   return origin ? `${origin}/assets` : '/assets';
 }
+
+// The operator's PUBLIC WEBSITE base (where published articles live).
+// WEBSITE_BASE_URL when set (db-first callers pass a resolved env; on the
+// author's prod it is a secret), else this install's own origin — honest for
+// preview links until a real site exists. Never someone else's domain.
+export function siteBase(env) {
+  const configured = (env?.WEBSITE_BASE_URL || '').replace(/\/+$/, '');
+  if (configured) return configured;
+  return origin || '';
+}

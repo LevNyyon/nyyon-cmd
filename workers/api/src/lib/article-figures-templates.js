@@ -788,7 +788,8 @@ export const FEATURED_TEMPLATE = {
       const s = String(slots.sub);
       p.push(label(64, 572, s, { size: fit(s, 760, 19), fill: MUTE, weight: 500, anchor: 'start' }));
     }
-    p.push(label(Wc - 64, 572, 'NYYON.COM', { size: 15, fill: MUTE, mono: true, weight: 700, ls: 2, anchor: 'end' }));
+    // the OPERATOR'S site, when known — never a hardcoded domain
+    if (slots.site) p.push(label(Wc - 64, 572, String(slots.site), { size: 15, fill: MUTE, mono: true, weight: 700, ls: 2, anchor: 'end' }));
 
     p.push('</svg>');
     return p.join('');

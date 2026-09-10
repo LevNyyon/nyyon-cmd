@@ -58,7 +58,7 @@ installing plugins from people you trust.
   "title": "Web Headline",
   "version": "2.0.0",
   "description": "One paragraph: what the plugin does for the operator.",
-  "origin": { "system": "cmd.nyyon.com", "exported_at": 1787900000000 },
+  "origin": { "system": "my-cmd.example.workers.dev", "exported_at": 1787900000000 },
   "requires": {
     "gateways": [
       { "slug": "web", "modes": ["text"], "purpose": "fetch the page to headline" }

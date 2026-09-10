@@ -30,7 +30,7 @@ export const CHANNELS = [
   { key: 'linkedin-personal', network: 'LinkedIn', voice: 'lev',   label: 'Lev Kerzhner LinkedIn (personal)' },
 ];
 
-const PUBLIC_BASE = 'https://nyyon.com/blog';
+import { siteBase } from './self-origin.js';
 
 function htmlToText(html) {
   return String(html || '')
@@ -161,7 +161,7 @@ export async function generateSocialPostsForBlog(env, slug, { source = 'blog-pub
     title:   post.title,
     excerpt: post.excerpt,
     tags:    Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags || ''),
-    url:     `${PUBLIC_BASE}/${slug}`,
+    url:     `${siteBase(env)}/blog/${slug}`,
     snippet: htmlToText(post.body).slice(0, 1600),
   };
   const image_url = post.featured_image_url || null;
@@ -324,7 +324,7 @@ export async function approveAndPush(env, id) {
         status:      'done',
         source:      'social',
         source_ref:  id,
-        link_url:    `https://nyyon.com/blog/${row.blog_slug}`,
+        link_url:    `${siteBase(env)}/blog/${row.blog_slug}`,
         platform:    ch?.network || null,
         body:        row.content,
         created_by:  'system',

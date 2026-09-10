@@ -402,7 +402,7 @@ app.get('/api/system/health', async (c) => {
   //    Cloudflare Pages project `nyyon-lp` from its own
   //    repo. Publicly reachable, so a straight fetch works from the deployed
   //    worker — no tunnel needed.
-  checks.push(await probeGateway('Website', env.WEBSITE_BASE_URL, 'WEBSITE_BASE_URL', { deployed }));
+  if (env.WEBSITE_BASE_URL) checks.push(await probeGateway('Website', env.WEBSITE_BASE_URL, 'WEBSITE_BASE_URL', { deployed }));
 
   // 6. Digest channels — any enabled channel whose last_status is 'error'
   //    is degraded. Skipped channels (disabled) don't count.
