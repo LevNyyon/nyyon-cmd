@@ -1,0 +1,113 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nyyon-cmd-online",
+  "main": "src/index.js",
+  // No open *.workers.dev URL — the only public route is cmd.nyyon.com, gated
+  // by the src/gate.js login. Prevents an unauthenticated backdoor to the API.
+  "workers_dev": false,
+  // NOTE: the cmd.nyyon.com custom domain is bound at the account level (via
+  // the Cloudflare API / dashboard: Workers → nyyon-cmd-online → Domains &
+  // Routes), NOT here — the deploy token lacks Zone:Workers Routes:Edit on the
+  // nyyon.com zone, so a `routes` entry would make `wrangler deploy` fail.
+  // Re-add `"routes":[{"pattern":"cmd.nyyon.com","custom_domain":true}]` if you
+  // deploy with a token that has that scope.
+  "compatibility_date": "2026-04-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+
+  // Bundling rules — social cards (lib/social-cards.js) render SVG→PNG
+  // in-worker via resvg WASM, with the brand TTFs (Inter / JetBrains Mono)
+  // bundled as raw data from src/assets/fonts/.
+  "rules": [
+    { "type": "CompiledWasm", "globs": ["**/*.wasm"], "fallthrough": true },
+    { "type": "Data", "globs": ["**/*.ttf"], "fallthrough": true },
+    // schema.sql rides along as text: the worker applies it itself on first
+    // boot when the database is empty (lib/schema.js), so a Deploy button,
+    // a CI push, or the bootstrap script all land on a working database.
+    { "type": "Text", "globs": ["**/*.sql"], "fallthrough": true }
+  ],
+
+  "dev": {
+    "port": 8788
+  },
+
+  // D1 — this install's database (bootstrap writes your own ids here).
+  // Created 2026-06-01 via `wrangler d1 create nyyon`.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "nyyon",
+      "database_id": "ff2b033b-43fd-4938-87b7-30cc303afead"
+    }
+  ],
+
+  // KV — uncomment when a module needs it.  Create with: wrangler kv namespace create NYYON_KV
+  // "kv_namespaces": [
+  //   { "binding": "KV", "id": "" }
+  // ],
+
+  // R2 — public assets bucket. Stores generated featured images + future OG
+  // images. Served through the worker's own /assets/* routes by default; set
+  // an ASSETS_BASE_URL secret (a public r2.dev URL) to serve via CDN instead.
+  // so nyyon.com — and any other site fetching by URL — can load images
+  // directly from R2 without a worker hop. `remote: true` keeps wrangler dev
+  // pointed at the real bucket, not the local miniflare simulation.
+  "r2_buckets": [
+    { "binding": "ASSETS", "bucket_name": "nyyon-assets", "remote": true }
+  ],
+
+  // Workers AI — text-to-image generation for blog featured images (via
+  // lib/image-gateway.js). Free up to 10k neurons/day; well under that at
+  // current cadence (1 article/day). `remote: true` is required: AI calls
+  // always hit real Cloudflare (no local mock), so wrangler dev needs the
+  // explicit opt-in or it errors.
+  // account_id — replaced by scripts/bootstrap.mjs with your own account.
+  "account_id": "f6b1ffe60d85c7d1323681a2a69419a1",
+  "ai": { "binding": "AI", "remote": true },
+
+  "vars": {
+    // LLM_PROVIDER picks the brain for Nyo chat + digest synthesis + AEO writer.
+    // Per-provider model lives in ANTHROPIC_MODEL / OPENAI_MODEL. Do NOT set a
+    // global LLM_MODEL — it overrides both branches, so a gpt-* value would get
+    // sent to the Claude endpoint and 400.
+    "LLM_PROVIDER":    "anthropic",
+    "ANTHROPIC_MODEL": "claude-opus-4-8",
+    "OPENAI_MODEL":    "gpt-5.5",
+    // Nyo chat Mid/High switch (chat only; digest/AEO still use ANTHROPIC_MODEL).
+    "NYO_MODEL_MID":   "claude-sonnet-5",
+    "NYO_MODEL_HIGH":  "claude-opus-4-8",
+    "WEBSITE_BASE_URL": "https://nyyon.com",
+    // Plugin publishing (repo + token) is configured at runtime in
+    // Settings → Plugin publishing — never baked here, so forks stay clean.
+  },
+
+  // Static assets — serves the built React SPA (web/dist). The Worker handles
+  // /api/* and /health (run_worker_first); every other path falls back to the
+  // SPA index.html for client-side routing.
+  // Cron (see handleScheduled in src/index.js): :00 hourly awareness sweep
+  // (OSINT + meeting reminders), :45 LI-outreach tick, and the :06 daily AEO
+  // publish. NOTE: this Cloudflare account is capped at 5 cron triggers total
+  // and other workers consume 2, so THIS worker can register at most 3 — the
+  // :15 (heartbeat) and :30 (digest) handler branches in index.js exist but
+  // have no cron slot here (they'd need a plan bump or folding into :00). Keep
+  // this array to exactly these 3, or `wrangler deploy` fails the limit and can
+  // wipe the :45 tick. Crons are set out-of-band via the CF API when CI uses
+  // `wrangler versions deploy` (which does NOT sync triggers).
+  "triggers": { "crons": ["0 * * * *", "45 * * * *"] },
+
+  "assets": {
+    "directory": "../../web/dist",
+    "binding": "STATIC",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  }
+
+  // Secrets (use `wrangler secret put NAME`):
+  //   ANTHROPIC_API_KEY — Claude Messages API key. Used when LLM_PROVIDER=anthropic (default).
+  //   OPENAI_API_KEY    — OpenAI API key. Used when LLM_PROVIDER=openai.
+  //   WA_API_KEY        — OpenWA X-API-Key header (Roadie uses 'dev-admin-key' default).
+  //   LI_API_KEY        — LinkedinGateway X-API-Key header (see linkedin-endpoints doc).
+  //   DEV_API_KEY       — bearer key for the /api/dev/* component test bench (curl any gateway/tool/workflow).
+  //   PLUGINS_GH_TOKEN  — fine-grained GitHub token (Contents: read/write on PLUGINS_GH_REPO) for the Plugins materializer.
+  //   NYYON_APPLIER_KEY — bearer key for the /api/plugins/pending|applied|verify applier endpoints (optional; future-proofing).
+}

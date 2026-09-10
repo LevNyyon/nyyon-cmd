@@ -1,0 +1,77 @@
+name: Deploy to Cloudflare
+
+# Replaces the old Cloudflare "Workers Builds" git integration, which deployed
+# from workers/api/ WITHOUT building the SPA first. Because web/dist is
+# gitignored, those builds shipped an empty assets dir -> white screen, clobbering
+# the good manual deploy. This workflow builds the SPA first, THEN deploys, so
+# every push to main lands a correct, complete deploy.
+#
+# Requires one repo secret: CLOUDFLARE_API_TOKEN (a token that can deploy the
+# nyyon-cmd-online Worker). Worker Secrets (ANTHROPIC_API_KEY, GATE_*, WA_API_KEY)
+# and the cmd.nyyon.com custom domain live server-side on Cloudflare and are
+# PRESERVED across `wrangler deploy` — this workflow never touches them.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+# One deploy at a time. Queue (don't cancel) so an in-flight upload always
+# finishes; the latest push runs last and wins.
+concurrency:
+  group: deploy-nyyon-cmd-online
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Node 22+ is required by wrangler 4.94 (deploy fails on 20 with
+          # "Wrangler requires at least Node.js v22.0.0"). vite build is fine on 22.
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            web/package-lock.json
+            workers/api/package-lock.json
+
+      # 0) nyyon-lite layer check — fail the deploy before building if any
+      #    gateway/tool/workflow breaks the five-layer rule (raw fetch/DB in a
+      #    tool, tool importing a tool, an unregistered component). Zero-dep
+      #    Node, scans workers/api/src. This is the enforcement backstop; the
+      #    PostToolUse hook gives the same feedback at edit time locally.
+      - name: Validate layers (nyyon-lite)
+        run: node scripts/validate.mjs
+
+      # 1) Build the React SPA into web/dist. The Worker's wrangler.jsonc points
+      #    assets.directory at ../../web/dist, so this MUST run before deploy.
+      #    We call `vite build` directly (not `npm run build`, which is
+      #    `tsc -b && vite build`): the repo has pre-existing type-only errors
+      #    (dead code + a missing vite-env.d.ts) that fail the tsc gate but do
+      #    not affect the bundle. `vite build` is exactly the path every working
+      #    manual deploy used. Re-add the tsc gate once those types are cleaned.
+      - name: Build SPA
+        working-directory: web
+        run: |
+          npm ci
+          npx vite build
+
+      # 2) Install the Worker's deps (pinned wrangler) and deploy. wrangler reads
+      #    workers/api/wrangler.jsonc, which has account_id baked in and no routes
+      #    block (cmd.nyyon.com is a Custom Domain bound at the account level).
+      - name: Deploy Worker
+        working-directory: workers/api
+        run: |
+          npm ci
+          # Inject the deployed commit as BUILD_SHA (esbuild --define, compile-time
+          # text replacement — does NOT touch vars/secrets). Surfaces as the
+          # X-Nyyon-Build response header. ${GITHUB_SHA::7} = short commit sha.
+          npx wrangler deploy --define BUILD_SHA:"\"${GITHUB_SHA::7}\""
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

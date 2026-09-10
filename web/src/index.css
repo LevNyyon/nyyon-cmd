@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+/* Materialized plugin pages must reach Tailwind: no ignore file may hide them
+   (its scanner honors .gitignore AND .git/info/exclude even against @source). */
+@source "./plugins";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-paper: #FAFAF9;
+  --color-ink:   #0A0A0A;
+  --color-line:  #E7E5E4;
+  --color-mute:  #78716C;
+  --color-card:  #FFFFFF;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* CSS vars for hand-rolled rgba shading (grid lines, .panel bg).
+   Light mode = dark ink shading; dark mode flips. */
+:root {
+  --grid-rgb: 10, 10, 10;
+  --card-rgb: 255, 255, 255;
+}
+
+.dark {
+  --color-paper: #09090B;
+  --color-ink:   #FAFAF9;
+  --color-line:  #27272A;
+  --color-mute:  #A1A1AA;
+  --color-card:  #18181B;
+  --grid-rgb:    250, 250, 250;
+  --card-rgb:    24, 24, 27;
+}
+
+html, body, #root { height: 100%; }
+body {
+  font-family: var(--font-sans);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(to right,  rgba(var(--grid-rgb), .04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--grid-rgb), .04) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.mono     { font-family: var(--font-mono); }
+.hairline { border: 1px solid var(--color-line); }
+.panel    { background: rgba(var(--card-rgb), .7); backdrop-filter: blur(6px); }
+
+:focus-visible { outline: 1.5px solid var(--color-ink); outline-offset: 2px; border-radius: 4px; }
+
+/* ─── GTM org chart (ocx-*) — ported from the dedicated gtm app's styles.css.
+   Boxed tree cards + pseudo-element connector lines. Token swap:
+   --line→--color-line, --card→--color-card, --ink→--color-ink,
+   --mute→--color-mute, --card-hi→--color-paper. */
+.ocx-scroll { overflow-x: auto; padding: 8px 0 2px; }
+.ocx-tree { display: inline-flex; justify-content: safe center; min-width: 100%; }
+.ocx-node { display: flex; flex-direction: column; align-items: center; }
+.ocx-down { width: 1px; height: 14px; background: var(--color-line); }
+.ocx-kids { display: flex; align-items: flex-start; }
+.ocx-kids > .ocx-node { position: relative; padding: 14px 8px 0; }
+.ocx-kids > .ocx-node::before { content: ''; position: absolute; top: 0; left: 50%; width: 1px; height: 14px; background: var(--color-line); }
+.ocx-kids > .ocx-node::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--color-line); }
+.ocx-kids > .ocx-node:first-child::after { left: 50%; }
+.ocx-kids > .ocx-node:last-child::after { right: 50%; }
+.ocx-kids > .ocx-node:only-child::after { display: none; }
+.ocx-card { display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid var(--color-line); border-radius: 10px; background: var(--color-card); padding: 12px 12px 10px; width: 172px; }
+.ocx-card.me { border-color: var(--color-ink); box-shadow: 0 1px 0 rgba(0,0,0,0.04); }
+.ocx-card.contact { border-color: #22A06B; box-shadow: 0 0 0 1px #22A06B; }
+.ocx-contact { margin-top: 5px; font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: #1a7f4b; border: 1px solid #9bd3b3; border-radius: 999px; padding: 1px 7px; }
+.ocx-contacts-note { font-size: 12px; color: #1a7f4b; background: #eef8f2; border: 1px solid #bfe3cd; border-radius: 8px; padding: 7px 10px; margin: 6px 0 2px; }
+.ocx-av { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; background: var(--color-paper); border: 1px solid var(--color-line); margin-bottom: 8px; }
+.ocx-av img { width: 100%; height: 100%; object-fit: cover; }
+.ocx-ini { font-family: var(--font-mono); font-size: 14px; color: var(--color-mute); }
+.ocx-name { font-size: 13px; font-weight: 600; color: var(--color-ink); max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ocx-title { font-size: 11px; color: var(--color-mute); margin-top: 2px; line-height: 1.35; width: 100%; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.7em; }

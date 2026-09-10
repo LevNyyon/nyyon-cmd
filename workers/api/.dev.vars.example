@@ -1,0 +1,13 @@
+# Copy to .dev.vars (gitignored) and fill.
+ANTHROPIC_API_KEY=sk-ant-...
+# OPENAI_API_KEY=sk-...
+# WA_API_KEY=dev-admin-key      # OpenWA X-API-Key — Roadie's default
+# LI_API_KEY=dev-admin-key      # LinkedinGateway X-API-Key — gateway default
+
+# ── Auth gate (src/gate.js) — protects the whole online deployment ──
+# Set these as Cloudflare secrets in production (`wrangler secret put NAME`),
+# NOT committed. The login page checks GATE_USER + GATE_PASSWORD; sessions are
+# HMAC-signed with GATE_SECRET. Rate limit: 3 failed attempts / hour / IP.
+GATE_USER=you@example.com
+GATE_PASSWORD=change-me
+GATE_SECRET=long-random-string-for-cookie-signing

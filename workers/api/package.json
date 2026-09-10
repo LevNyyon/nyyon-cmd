@@ -1,0 +1,21 @@
+{
+  "name": "nyyon-cmd-api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "lint:layers": "node ../../scripts/validate.mjs",
+    "db:apply:local": "bash ../../scripts/db-apply.sh local",
+    "db:apply:remote": "bash ../../scripts/db-apply.sh remote"
+  },
+  "dependencies": {
+    "@resvg/resvg-wasm": "^2.6.2",
+    "hono": "^4.9.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.93.0"
+  }
+}

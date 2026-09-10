@@ -1,0 +1,33 @@
+// nyyon-blog-edge — incremental blog publishing at the edge.
+//
+// Deploy:  CLOUDFLARE_API_TOKEN=<workers-deploy token> npx wrangler deploy
+// (run scripts/gen-template.mjs first if the live site was fully redeployed)
+//
+// Routes are added on the nyyon.com zone (9aeb1462ada215c18010ddf5441105ab):
+//   nyyon.com/blog*  +  nyyon.com/sitemap.xml
+// They live in this config so a redeploy keeps them; the deploy token needs
+// Zone → Workers Routes → Edit on nyyon.com. Until that token exists, the
+// `routes` block below stays commented and the worker is reachable only on
+// workers.dev for verification.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nyyon-blog-edge",
+  "main": "src/index.js",
+  "account_id": "f6b1ffe60d85c7d1323681a2a69419a1",
+  "compatibility_date": "2026-04-12",
+  "workers_dev": true,
+  // "routes": [
+  //   { "pattern": "nyyon.com/blog*", "zone_id": "9aeb1462ada215c18010ddf5441105ab" },
+  //   { "pattern": "www.nyyon.com/blog*", "zone_id": "9aeb1462ada215c18010ddf5441105ab" },
+  //   { "pattern": "nyyon.com/sitemap.xml", "zone_id": "9aeb1462ada215c18010ddf5441105ab" },
+  //   { "pattern": "www.nyyon.com/sitemap.xml", "zone_id": "9aeb1462ada215c18010ddf5441105ab" }
+  // ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "nyyon",
+      "database_id": "ff2b033b-43fd-4938-87b7-30cc303afead"
+    }
+  ],
+  "observability": { "enabled": true }
+}
