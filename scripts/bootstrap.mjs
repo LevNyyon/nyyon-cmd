@@ -132,6 +132,31 @@ step('minting the setup token');
 const token = randomBytes(16).toString('hex');
 run(`npx wrangler d1 execute ${dbName} --remote -y --command "INSERT INTO install_state (id, created_at, setup_token) VALUES (1, ${Date.now()}, '${token}') ON CONFLICT(id) DO UPDATE SET setup_token = CASE WHEN admin_user IS NULL THEN '${token}' ELSE setup_token END"`);
 
+// ── 8. push the install's config into YOUR git (Local > Git > CF) ──
+// Your fork is the source of truth: CI deploys every push to main, and code
+// plugins ship as commits. The bootstrap's direct deploy above was only the
+// first boot.
+step('syncing your fork');
+let origin = '';
+try { origin = run('git remote get-url origin', { cwd: root }).trim(); } catch { /* no remote */ }
+const isCanonical = /LevNyyon\/nyyon-cmd(\.git)?$/.test(origin);
+if (isCanonical || !origin) {
+  console.log(`
+  This checkout is not YOUR repository yet (origin: ${origin || 'none'}).
+  Give it one so pushes deploy:
+    1. Create your own repo (private is fine): https://github.com/new
+    2. git remote set-url origin https://github.com/YOUR-USER/YOUR-REPO.git
+       git push -u origin main
+    3. Re-run this bootstrap; it commits and pushes your install's config.`);
+} else {
+  try {
+    run('git add workers/api/wrangler.jsonc', { cwd: root });
+    run('git -c user.name=nyyon-bootstrap -c user.email=bootstrap@localhost commit -m "bootstrap: this install\'s ids"', { cwd: root });
+  } catch { /* nothing new to commit */ }
+  try { run('git push origin HEAD', { cwd: root, stdio: 'inherit' }); console.log('pushed to your fork'); }
+  catch { console.log('could not push (check your git login) — push manually: git push origin HEAD'); }
+}
+
 console.log(`
 ✓ Your Nyyon Command Center is live.
 

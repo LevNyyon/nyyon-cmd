@@ -5,16 +5,20 @@ your database, your files, your keys. Nothing phones home.
 
 ## What you need
 
-- A Cloudflare account (free tier works). No GitHub account is needed:
-  the code lives on your machine, Cloudflare runs it.
+- A GitHub account and your OWN repo holding this code: create an empty
+  one at https://github.com/new, then push this code into it. Your repo is
+  the source of truth; every push to main deploys.
+- A Cloudflare account (free tier works).
 - Node 22+ on your machine, for the one-time bootstrap.
 - An Anthropic API key (console.anthropic.com). The wizard asks for it.
 
 ## Install
 
 ```bash
-git clone https://github.com/LevNyyon/nyyon-cmd.git
-cd nyyon-cmd
+git clone https://github.com/LevNyyon/nyyon-cmd.git my-cmd
+cd my-cmd
+git remote set-url origin https://github.com/YOU/YOUR-REPO.git
+git push -u origin main
 npx wrangler login
 node scripts/bootstrap.mjs
 ```
@@ -49,18 +53,17 @@ node scripts/materialize.mjs --url https://<your-install>.workers.dev
 ```
 
   It writes the plugin files into your checkout, deploys, and reports back
-  so the install flips the plugin active. Prefer hands-off? Fork the repo,
-  then:
+  so the install flips the plugin active. Prefer hands-off? Use your own repo:
 
   1. Create a GitHub token: https://github.com/settings/personal-access-tokens/new
-     (Fine-grained; Repository access: only your fork; Permissions ->
+     (Fine-grained; Repository access: only your repo; Permissions ->
      Repository -> Contents: Read and write.)
-  2. Enter your fork (owner/name) and that token in Settings -> Plugin
+  2. Enter your repo (owner/name) and that token in Settings -> Plugin
      publishing inside the app.
   3. Create a Cloudflare token: https://dash.cloudflare.com/profile/api-tokens
      -> Create Token -> use the "Edit Cloudflare Workers" template.
   4. Add it as a repo secret named `CLOUDFLARE_API_TOKEN`:
-     https://github.com/YOUR-USER/YOUR-FORK/settings/secrets/actions
+     your repo -> Settings -> Secrets and variables -> Actions
      -> New repository secret.
 
   Every push to `main` then deploys, plugins included. Optional either way.

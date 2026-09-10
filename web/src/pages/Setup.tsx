@@ -187,10 +187,10 @@ const GATE_STEPS: GateStep[] = [
   },
   {
     slug: 'github', name: 'Plugin publishing',
-    why: 'Optional, and only about plugins that carry code. Default: you run one command on your own machine (node scripts/materialize.mjs) and it writes the plugin files and deploys from your checkout. This step is the hands-off alternative: a GitHub repo plus a token, and CI deploys for you. Skip it unless you want that.',
+    why: 'Your own GitHub repo is where plugins that carry code get committed, and your CI deploys them. Enter the repo and a token and plugin installs become hands-off. (No repo yet? Skip: node scripts/materialize.mjs from your checkout does the same job manually.)',
     link: 'https://github.com/settings/personal-access-tokens/new', linkLabel: 'Create a GitHub token',
     how: [
-      'You deployed this install from a GitHub repo (your fork). This step points at that same repo.',
+      "This install's code lives in YOUR GitHub repo. This step points at that repo.",
       'Create a fine-grained personal access token scoped to ONLY that repo, permission Contents: read and write.',
       'Enter the repo as owner/name and paste the token below.',
     ],

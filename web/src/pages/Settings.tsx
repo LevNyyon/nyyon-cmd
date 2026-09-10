@@ -53,9 +53,9 @@ function PluginPublishing() {
     setBusy(false); load();
   };
   return (
-    <Section title="Plugin publishing" hint="Optional. Plugins that carry code need a fresh deploy (a Worker cannot load code at run time). Default: run `node scripts/materialize.mjs` from your checkout, it writes the files and deploys from your machine. Configure this instead if you want GitHub + CI to do it hands-off. Data-only plugins never need either.">
+    <Section title="Plugin publishing" hint="Plugins that carry code deploy as commits to YOUR OWN repo (a Worker cannot load code at run time): enter the repo and a token and installs are hands-off via your CI. Fallback without it: node scripts/materialize.mjs from your checkout. Data-only plugins never need either.">
       <p className="text-[11px] text-mute mb-2">
-        Setup: your install deploys from a GitHub repo (the fork you deployed). Create a{' '}
+        Setup: this install's code lives in your own GitHub repo. Create a{' '}
         <a className="underline underline-offset-2 hover:text-ink" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noreferrer">fine-grained token</a>{' '}
         scoped to that one repo with Contents read and write. Enter owner/name and the token here.
         {set_ && <span className="mono text-[9px] uppercase tracking-[0.14em] px-1.5 py-0.5 rounded-sm bg-emerald-500/15 text-emerald-700 ml-2">connected</span>}
