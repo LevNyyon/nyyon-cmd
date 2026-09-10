@@ -10,10 +10,16 @@
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 const DEFAULT_MAX_BYTES  = 500_000;
+// A UA-less fetch gets 400/403 from a lot of real sites. Every gateway fetch
+// sends a plain browser-like identity by default; callers can override.
+const DEFAULT_HEADERS = {
+  'user-agent': 'Mozilla/5.0 (compatible; nyyon-cmd/1.0)',
+  'accept': 'text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8',
+};
 
 export async function fetchText(env, { url, timeout_ms = DEFAULT_TIMEOUT_MS, max_bytes = DEFAULT_MAX_BYTES, headers } = {}) {
   if (!/^https?:\/\//i.test(String(url || ''))) throw new Error('web gateway: url must be http(s)');
-  const r = await fetch(url, { headers, signal: AbortSignal.timeout(timeout_ms), redirect: 'follow' });
+  const r = await fetch(url, { headers: { ...DEFAULT_HEADERS, ...(headers || {}) }, signal: AbortSignal.timeout(timeout_ms), redirect: 'follow' });
   const raw = await r.text();
   return {
     ok: r.ok, status: r.status, status_text: r.statusText,
@@ -27,7 +33,7 @@ export async function fetchText(env, { url, timeout_ms = DEFAULT_TIMEOUT_MS, max
 // checks where GETting the whole document would be waste.
 export async function head(env, { url, timeout_ms = DEFAULT_TIMEOUT_MS } = {}) {
   if (!/^https?:\/\//i.test(String(url || ''))) throw new Error('web gateway: url must be http(s)');
-  const r = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(timeout_ms), redirect: 'follow' });
+  const r = await fetch(url, { method: 'HEAD', headers: DEFAULT_HEADERS, signal: AbortSignal.timeout(timeout_ms), redirect: 'follow' });
   return { ok: r.ok, status: r.status };
 }
 
@@ -48,7 +54,7 @@ export async function postJson(env, { url, body, headers, timeout_ms = DEFAULT_T
 
 export async function fetchBytes(env, { url, timeout_ms = 20_000 } = {}) {
   if (!/^https?:\/\//i.test(String(url || ''))) throw new Error('web gateway: url must be http(s)');
-  const r = await fetch(url, { signal: AbortSignal.timeout(timeout_ms), redirect: 'follow' });
+  const r = await fetch(url, { headers: DEFAULT_HEADERS, signal: AbortSignal.timeout(timeout_ms), redirect: 'follow' });
   if (!r.ok) return { ok: false, status: r.status, bytes: null, content_type: null };
   return {
     ok: true, status: r.status,
