@@ -7,6 +7,7 @@ import { tools as knowledgeTools } from './knowledge.js';
 import { tools as activityLogTools } from './activity-log.js';
 import { tools as heartbeatTools } from './heartbeat.js';
 import { tools as whatsappTools } from './whatsapp.js';
+import { tools as webTools } from './web.js';
 import { tools as workflowsTools } from './workflows.js';
 import { tools as linkedinTools } from './linkedin.js';
 import { tools as featureFlagsTools } from './feature-flags.js';
@@ -30,6 +31,7 @@ const TOOL_REGISTRY = {
   ...activityLogTools,
   ...heartbeatTools,
   ...whatsappTools,
+  ...webTools,
   ...workflowsTools,
   ...linkedinTools,
   ...featureFlagsTools,
