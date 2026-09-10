@@ -3,7 +3,7 @@
 // Schedule → Approved Sources. The linear path is Topic → Take → Brief →
 // Article → Review → Social → Schedule → Verify; every screen shows the next
 // action, not just a status. Distribution is DRY-RUN by default (hottakes.live
-// feature flag) so nothing reaches nyyon.com or LinkedIn until the operator
+// feature flag) so nothing reaches your website or LinkedIn until the operator
 // flips it deliberately.
 
 import { useEffect, useMemo, useRef, useState } from 'react';

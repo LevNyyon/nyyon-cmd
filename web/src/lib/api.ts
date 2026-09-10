@@ -104,7 +104,7 @@ export type DigestContext = {
 // retry button on failures.
 //
 // "Blog" is a channel in the same sense as WhatsApp: it has a destination
-// (nyyon.com, behind the prod D1), a delivery attempt that can fail mid-
+// (your website, behind the prod D1), a delivery attempt that can fail mid-
 // flight (prod PUT, deploy sidecar), and an audit row with retry semantics.
 export type OutboxChannel = 'wa' | 'li' | 'blog' | 'email' | 'sms';
 export type OutboxStatus  = 'queued' | 'sent' | 'failed';

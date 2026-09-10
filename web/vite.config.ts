@@ -10,7 +10,7 @@ export default defineConfig({
       '/api':    { target: 'http://localhost:8788', changeOrigin: true },
       '/health': { target: 'http://localhost:8788', changeOrigin: true },
       // Local deploy sidecar (scripts/deploy-server.mjs). Lets the Website
-      // module trigger a "Publish to nyyon.com" build + Pages deploy
+      // module trigger a "Publish to your website" build + Pages deploy
       // without leaving the ops UI. Same-origin proxy keeps the browser
       // happy (no CORS dance from the sidecar). 8791 — 8790 is taken by
       // OpenWA's control daemon on this machine.

@@ -700,8 +700,8 @@ export async function runAeoCron(env, { actor = 'aeo-cron', targetSlug = null, r
       console.warn(`[aeo-figures] ${safeSlug}:`, figErr?.message || figErr);
     }
 
-    // Auto-deploy to nyyon.com via the local deploy sidecar, and CAPTURE the
-    // result. A post that only reached local D1 is NOT live on nyyon.com until
+    // Auto-deploy to the website via the local deploy sidecar, and CAPTURE the
+    // result. A post that only reached local D1 is NOT live on the website until
     // a deploy actually runs. We must know whether the sidecar accepted it so
     // we can tell the operator the truth instead of always claiming "live".
     // The writer no longer deploys: posts are drafts now. The operator approves
@@ -753,7 +753,7 @@ export async function runAeoCron(env, { actor = 'aeo-cron', targetSlug = null, r
       ? ` Featured image stored at ${image.url}.`
       : (image?.error ? ` Image generation failed: ${image.error}.` : '');
     const trigger  = actor === 'aeo-cron' ? 'the daily cron' : `you (${actor})`;
-    const liveLine = `Triggered by ${trigger}. It's saved as a **draft** — open the **Blog** module → **Needs review** to read it and approve. Approving publishes it to nyyon.com.`;
+    const liveLine = `Triggered by ${trigger}. It's saved as a **draft** — open the **Blog** module → **Needs review** to read it and approve. Approving publishes it to the website.`;
     await queueNyoMessage(env, {
       kind:     'aeo_drafted',
       ref_kind: 'blog_posts',

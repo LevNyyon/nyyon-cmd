@@ -2,14 +2,14 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "nyyon-cmd-online",
   "main": "src/index.js",
-  // No open *.workers.dev URL — the only public route is cmd.nyyon.com, gated
+  // No open *.workers.dev URL — the only public route is cmd.example.com, gated
   // by the src/gate.js login. Prevents an unauthenticated backdoor to the API.
   "workers_dev": true,
-  // NOTE: the cmd.nyyon.com custom domain is bound at the account level (via
+  // NOTE: the cmd.example.com custom domain is bound at the account level (via
   // the Cloudflare API / dashboard: Workers → nyyon-cmd-online → Domains &
   // Routes), NOT here — the deploy token lacks Zone:Workers Routes:Edit on the
-  // nyyon.com zone, so a `routes` entry would make `wrangler deploy` fail.
-  // Re-add `"routes":[{"pattern":"cmd.nyyon.com","custom_domain":true}]` if you
+  // example.com zone, so a `routes` entry would make `wrangler deploy` fail.
+  // Re-add `"routes":[{"pattern":"cmd.example.com","custom_domain":true}]` if you
   // deploy with a token that has that scope.
   "compatibility_date": "2026-04-12",
   "compatibility_flags": ["nodejs_compat"],
@@ -49,7 +49,7 @@
   // R2 — public assets bucket. Stores generated featured images + future OG
   // images. Served through the worker's own /assets/* routes by default; set
   // an ASSETS_BASE_URL secret (a public r2.dev URL) to serve via CDN instead.
-  // so nyyon.com — and any other site fetching by URL — can load images
+  // so example.com — and any other site fetching by URL — can load images
   // directly from R2 without a worker hop. `remote: true` keeps wrangler dev
   // pointed at the real bucket, not the local miniflare simulation.
   "r2_buckets": [

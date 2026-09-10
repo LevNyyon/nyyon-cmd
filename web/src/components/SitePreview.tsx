@@ -63,7 +63,7 @@ export function PreviewModePill({ mode, onChange }: { mode: PreviewMode; onChang
           'inline-flex items-center gap-1.5 mono text-[10px] uppercase tracking-[0.18em] h-6 px-2 rounded-sm transition ' +
           (mode === 'live' ? 'bg-ink text-paper' : 'text-mute hover:text-ink')
         }
-        title="Production nyyon.com — what visitors see"
+        title="The live article page"
       >
         <span className={'inline-block h-1.5 w-1.5 rounded-full ' + (mode === 'live' ? 'bg-emerald-300' : 'bg-emerald-500')} aria-hidden />
         Live

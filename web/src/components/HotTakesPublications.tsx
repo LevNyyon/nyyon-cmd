@@ -32,7 +32,6 @@ type Row = { post: BlogPostWithTags | null; pkg: PipePkg | null; slug: string; t
 type SortKey = 'views' | 'unique_visitors' | 'avg_scroll' | 'last_view' | 'published_at' | 'title';
 type SortDir = 'asc' | 'desc';
 
-const PROD_URL = 'https://nyyon.com';
 
 const STATUS_LABEL: Record<string, string> = {
   article: 'Article', review: 'Needs review', ready: 'Ready',
@@ -467,7 +466,7 @@ export function PublicationsTab({ bump, refresh, focusSlug, onConsumeFocus, onOp
   };
   function mobileDelete() {
     if (!mobileSel) return;
-    const liveWarning = mobileSel.post?.published ? ' It does NOT unpublish it from nyyon.com — take the live post down separately.' : '';
+    const liveWarning = mobileSel.post?.published ? ' It does NOT unpublish it from the website — take the live post down separately.' : '';
     if (!confirm(`Delete "${mobileSel.title}"?\n\nThis removes the post from the Command Center.${liveWarning}\n\nThis can't be undone.`)) return;
     const slug = mobileSel.slug;
     setMobileSel(null);
@@ -667,7 +666,7 @@ function PublicationRow({ row, kind, onChanged, onEdit, mobile, selected, onSele
 
   async function remove() {
     const title = row.title;
-    const liveWarning = post?.published ? ' It does NOT unpublish it from nyyon.com — take the live post down separately.' : '';
+    const liveWarning = post?.published ? ' It does NOT unpublish it from the website — take the live post down separately.' : '';
     if (!confirm(`Delete "${title}"?\n\nThis removes the post from the Command Center.${liveWarning}\n\nThis can't be undone.`)) return;
     await run('del', () => api.deleteBlogPost(slug));
   }
@@ -737,7 +736,7 @@ function PublicationRow({ row, kind, onChanged, onEdit, mobile, selected, onSele
               ) : (
                 <button
                   onClick={() => setSchedOpen(true)}
-                  title="Approve this draft and pick the date it publishes to nyyon.com"
+                  title="Approve this draft and pick the date it publishes"
                   className="h-8 px-3 rounded-sm mono text-[10px] uppercase tracking-[0.16em] bg-ink text-paper hover:opacity-90 transition"
                 >
                   Schedule
@@ -1666,7 +1665,7 @@ function EditorModal({ row, autoDraft = false, onClose, onScheduled, onOpenRevie
   // a later autosave from this open editor would write published:0 and silently
   // unpublish the article.
   async function publishNow() {
-    if (!window.confirm(`Publish "${row.title}" to nyyon.com right now?`)) return;
+    if (!window.confirm(`Publish "${row.title}" right now?`)) return;
     setBusy('pub'); setErr(null);
     try {
       const r = await (pkg ? api.hotTakePublishWebsite(pkg.id) : api.publishBlogPost(slug));
@@ -1721,7 +1720,7 @@ function EditorModal({ row, autoDraft = false, onClose, onScheduled, onOpenRevie
           {!post?.published && wizStep === null && (
             <button
               onClick={() => setSchedOpen(true)}
-              title="Pick when this publishes to nyyon.com"
+              title="Pick when this publishes"
               className="h-8 px-3 sm:px-4 rounded-sm mono text-[10px] uppercase tracking-[0.16em] bg-ink text-paper hover:opacity-90 transition shrink-0"
             >
               {isScheduled ? 'Reschedule' : 'Schedule'}
@@ -1868,7 +1867,7 @@ function EditorModal({ row, autoDraft = false, onClose, onScheduled, onOpenRevie
               </div>
               <div className="flex items-center justify-between gap-3">
                 <span className="mono text-[10px] uppercase tracking-[0.2em] text-mute truncate">local preview · {slug}</span>
-                <a href={`${PROD_URL}/blog/${slug}`} target="_blank" rel="noopener noreferrer" className="mono text-[10px] uppercase tracking-[0.2em] text-mute hover:text-ink transition shrink-0">open live ↗</a>
+                <a href={`/blog/${slug}`} target="_blank" rel="noopener noreferrer" className="mono text-[10px] uppercase tracking-[0.2em] text-mute hover:text-ink transition shrink-0">open live ↗</a>
               </div>
               <SitePreview src={`/api/blog/${slug}/preview`} title={post.title} className="w-full h-[560px] hairline rounded-sm bg-paper" />
             </div>
@@ -1907,7 +1906,7 @@ function EditorModal({ row, autoDraft = false, onClose, onScheduled, onOpenRevie
               <div className="flex-1 min-w-0 text-[11px] text-mute leading-relaxed">
                 {isScheduled && pkg?.scheduled_at
                   ? <>Publishes <span className="text-ink font-medium">{fmtWhen(pkg.scheduled_at)}</span> — the hourly scheduler pushes it live, then the social posts follow their offsets.</>
-                  : 'Not scheduled yet — pick when this goes live on nyyon.com.'}
+                  : 'Not scheduled yet — pick when this goes live.'}
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <button
@@ -2252,7 +2251,7 @@ function LegCard({ leg, base, identity, articleTitle, coverUrl, onPatched, onRed
             <img src={devUrl(mediaUrl)} alt="" loading="lazy" className="w-full aspect-[1.91/1] object-cover" />
             <div className="px-3.5 py-2 bg-card/60">
               <div className="text-[12px] font-medium text-ink truncate">{articleTitle}</div>
-              <div className="text-[10px] text-mute">nyyon.com</div>
+              <div className="text-[10px] text-mute">website</div>
             </div>
           </div>
         )}

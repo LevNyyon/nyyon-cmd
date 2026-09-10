@@ -270,7 +270,7 @@ app.use('*', cors());
 
 // Build stamp — surfaces the deployed build on every response (incl. the login
 // page, pre-auth) as `X-Nyyon-Build`, so a GitHub push can be verified live via
-// `curl -I https://cmd.nyyon.com`. Runs before the gate; only tags the response
+// `curl -I https://your install`. Runs before the gate; only tags the response
 // after the chain, so it has no effect on auth.
 //   BUILD_SHA is injected at deploy time by the GitHub Action via
 //   `wrangler deploy --define BUILD_SHA:'"<git-sha>"'` (esbuild replaces the
@@ -325,7 +325,7 @@ async function probeGateway(name, baseUrl, envVar, { headers = {}, deployed = fa
 app.get('/api/system/health', async (c) => {
   const checks = [];
   const env = c.env;
-  // Deployed cloud worker (cmd.nyyon.com) vs local dev: localhost gateways are
+  // Deployed cloud worker (your install) vs local dev: localhost gateways are
   // reachable in dev but never from the deployed worker — the probe uses this.
   const deployed = !/^(localhost|127\.0\.0\.1)/.test((() => { try { return new URL(c.req.url).host; } catch { return ''; } })());
 
@@ -398,7 +398,7 @@ app.get('/api/system/health', async (c) => {
     }
   }
 
-  // 5. Website — the live marketing site (https://nyyon.com), served by the
+  // 5. Website — the live marketing site (https://your website), served by the
   //    Cloudflare Pages project `nyyon-lp` from its own
   //    repo. Publicly reachable, so a straight fetch works from the deployed
   //    worker — no tunnel needed.
@@ -1456,7 +1456,7 @@ async function handleScheduled(event, env, ctx) {
   //   "0 * * * *" (hourly) → the awareness sweep: OSINT scrape → heartbeat →
   //                          regenerate the digest → fire meeting reminders.
   //   "0 6 * * *" (daily)  → AEO article publisher ONLY (never hourly — it would
-  //                          double-post to nyyon.com).
+  //                          double-post to your website).
   // At 06:00 both expressions fire, but each invocation carries its own
   // event.cron, so we branch and never double-run the sweep.
   const cron = event.cron || '';

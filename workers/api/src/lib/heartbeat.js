@@ -105,7 +105,7 @@ async function fetchSource(env, source) {
   // max_bytes: Infinity keeps the pre-gateway uncapped read; feeds are small.
   const r = await webFetchText(env, {
     url: source.url, timeout_ms: 12000, max_bytes: Infinity,
-    headers: { 'user-agent': 'NyyonHeartbeat/1.0 (+nyyon.com)' },
+    headers: { 'user-agent': 'nyyon-cmd-heartbeat/1.0' },
   });
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
   return parseFeed(r.text);
@@ -119,7 +119,7 @@ export async function fetchArticleText(env, url, { maxChars = 8000 } = {}) {
   try {
     const r = await webFetchText(env, {
       url, timeout_ms: 12000, max_bytes: Infinity,
-      headers: { 'user-agent': 'Mozilla/5.0 (compatible; NyyonHeartbeat/1.0; +nyyon.com)' },
+      headers: { 'user-agent': 'Mozilla/5.0 (compatible; nyyon-cmd-heartbeat/1.0)' },
     });
     if (!r.ok) return '';
     const ct = r.content_type || '';

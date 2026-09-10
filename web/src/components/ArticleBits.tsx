@@ -311,7 +311,7 @@ export function InlineBodyEditor({ post, fullHeight = false, flow = false, figur
         : flow ? 'bg-paper py-4 sm:py-6'
         : 'hairline rounded-sm bg-paper max-h-[720px] overflow-y-auto py-8'
       }>
-        {/* Reads like the live nyyon.com article: tags, H1, excerpt, cover, body. */}
+        {/* Reads like the live your website article: tags, H1, excerpt, cover, body. */}
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           {post.tags.length > 0 && (
             <div className="mb-4 flex flex-wrap gap-2">

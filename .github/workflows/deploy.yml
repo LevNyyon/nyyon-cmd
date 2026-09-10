@@ -8,7 +8,7 @@ name: Deploy to Cloudflare
 #
 # Requires one repo secret: CLOUDFLARE_API_TOKEN (a token that can deploy the
 # nyyon-cmd-online Worker). Worker Secrets (ANTHROPIC_API_KEY, GATE_*, WA_API_KEY)
-# and the cmd.nyyon.com custom domain live server-side on Cloudflare and are
+# and the your install custom domain live server-side on Cloudflare and are
 # PRESERVED across `wrangler deploy` — this workflow never touches them.
 
 on:
@@ -64,7 +64,7 @@ jobs:
 
       # 2) Install the Worker's deps (pinned wrangler) and deploy. wrangler reads
       #    workers/api/wrangler.jsonc, which has account_id baked in and no routes
-      #    block (cmd.nyyon.com is a Custom Domain bound at the account level).
+      #    block (your install is a Custom Domain bound at the account level).
       - name: Deploy Worker
         working-directory: workers/api
         run: |

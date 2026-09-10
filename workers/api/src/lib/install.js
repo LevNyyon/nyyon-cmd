@@ -405,7 +405,7 @@ export async function verifyAdmin(env, { username, password } = {}) {
   const got = await pbkdf2(String(password || ''), salt, iterations);
   const pOk = timingSafeEqual(got, expected);
   // Emails are not case-sensitive in practice and the account is stored
-  // lowercased, so "Dev@Nyyon.com" must sign in as "dev@nyyon.com" — comparing
+  // lowercased, so "Dev@Example.com" must sign in as "Dev@Example.com" — comparing
   // exactly would lock out an operator who typed their own address naturally.
   const uOk = safeStrEqual(String(username || '').trim().toLowerCase(), String(row.admin_user || '').toLowerCase());
   return uOk && pOk;

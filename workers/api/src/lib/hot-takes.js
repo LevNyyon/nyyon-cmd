@@ -13,7 +13,7 @@
 // → live exactly when a social webhook is configured (see hotTakesLive)
 // (log + preview, no side effects). Flip it via PUT
 // /api/feature-flags/hottakes.live {value:true} when ready. The WEBSITE leg is
-// deliberately NOT gated: publishing to nyyon.com is the same trust level as the
+// deliberately NOT gated: publishing to your website is the same trust level as the
 // Blog page's Approve button (also ungated), so a scheduled publication really
 // goes live at its date — that is the whole point of scheduling it.
 
@@ -770,7 +770,7 @@ export async function cancelSchedule(env, id, actor = 'operator') {
 // Publish the website leg through the SHARED blog pipeline. social:false —
 // Hot Takes owns its own two posts; the Social module's auto-fan-out would
 // double-draft into the other queue.
-// NOT gated on hottakes.live: publishing to nyyon.com is the same trust level as
+// NOT gated on hottakes.live: publishing to your website is the same trust level as
 // the Blog page's ungated Approve button, and a scheduled publication must
 // actually go live at its date. Only the LinkedIn legs respect the flag.
 export async function publishWebsite(env, id, { actor = 'operator', ctx = null } = {}) {
