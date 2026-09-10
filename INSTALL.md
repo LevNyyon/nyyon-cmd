@@ -50,9 +50,20 @@ node scripts/materialize.mjs --url https://<your-install>.workers.dev
 
   It writes the plugin files into your checkout, deploys, and reports back
   so the install flips the plugin active. Prefer hands-off? Fork the repo,
-  configure Settings -> Plugin publishing with your fork and a fine-grained
-  token (Contents read/write), add a `CLOUDFLARE_API_TOKEN` repo secret, and
-  every push to `main` deploys, plugins included. Optional either way.
+  then:
+
+  1. Create a GitHub token: https://github.com/settings/personal-access-tokens/new
+     (Fine-grained; Repository access: only your fork; Permissions ->
+     Repository -> Contents: Read and write.)
+  2. Enter your fork (owner/name) and that token in Settings -> Plugin
+     publishing inside the app.
+  3. Create a Cloudflare token: https://dash.cloudflare.com/profile/api-tokens
+     -> Create Token -> use the "Edit Cloudflare Workers" template.
+  4. Add it as a repo secret named `CLOUDFLARE_API_TOKEN`:
+     https://github.com/YOUR-USER/YOUR-FORK/settings/secrets/actions
+     -> New repository secret.
+
+  Every push to `main` then deploys, plugins included. Optional either way.
 - **Updates**: `git pull`, then `node scripts/bootstrap.mjs` again. It reuses
   everything and only redeploys.
 - **A custom domain** is optional: add a `routes` entry in

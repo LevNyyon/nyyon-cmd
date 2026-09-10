@@ -142,6 +142,9 @@ console.log(`
   The link works until setup completes; a brand-new install also lets the
   first visitor in without it for one hour. Keep the token private.
 
-  To make push-to-main deploys work, add a repo secret named
-  CLOUDFLARE_API_TOKEN (a token allowed to deploy this worker).
+  Optional, for push-to-main deploys from a GitHub fork:
+    1. Create a Cloudflare token (template "Edit Cloudflare Workers"):
+       https://dash.cloudflare.com/profile/api-tokens
+    2. Add it to your fork as a secret named CLOUDFLARE_API_TOKEN:
+       your fork -> Settings -> Secrets and variables -> Actions
 `);
