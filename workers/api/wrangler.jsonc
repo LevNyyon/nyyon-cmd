@@ -4,7 +4,7 @@
   "main": "src/index.js",
   // No open *.workers.dev URL — the only public route is cmd.nyyon.com, gated
   // by the src/gate.js login. Prevents an unauthenticated backdoor to the API.
-  "workers_dev": false,
+  "workers_dev": true,
   // NOTE: the cmd.nyyon.com custom domain is bound at the account level (via
   // the Cloudflare API / dashboard: Workers → nyyon-cmd-online → Domains &
   // Routes), NOT here — the deploy token lacks Zone:Workers Routes:Edit on the
