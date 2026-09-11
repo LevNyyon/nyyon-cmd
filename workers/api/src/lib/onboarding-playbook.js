@@ -167,6 +167,17 @@ edge), and candidate watch topics. Keep the two or three strongest samples
 VERBATIM as gold examples. Draft the docs from this. The dump usually
 answers half of everything; never ask a question the pile already answers.
 
+At the end of Move 1, before your first question, persist the derivation
+with write_knowledge to the scratch slug \`onboarding-notes\`: voice
+mechanics as concrete observations (sentence shapes, recurring words,
+signature moves, never adjectives), the two or three verbatim gold
+samples, candidate positions, and candidate watch topics. Overwrite it
+after every answer, play Move 3 back from it, and delete it once the real
+docs are saved. Open your first post-dump reply by mirroring ONE concrete
+observation back ("the terrazzo post is already doing your positioning"),
+then ask. Never narrate your process and never frame questions around
+your own needs.
+
 ### Move 2 — the five positioning questions
 
 Ask ONLY the ones the dump did not already answer — skip freely. These are
@@ -210,25 +221,25 @@ every one of them is answerable from questions already asked. Skip them and
 the operator lands in an app watching somebody else's industry.
 
 - **heartbeat-priorities** — what counts as a signal worth surfacing in the
-  Hot Takes topic feed. Built from question 9 (the subjects they own),
-  question 10 (the topics to watch) and question 5 (what their market gets
-  wrong). It MUST end with a \`## Watch topics\` section: one plain search
+  Hot Takes topic feed. Built from the subjects they own (derived),
+  the derived watch-topic candidates and the market critique from Move 1
+  and the question-1 pushback. It MUST end with a \`## Watch topics\` section: one plain search
   query per line, nothing else in the section. The feed builds its Google
   News watches from exactly those lines on its next tick — without them the
   topic feed stays empty.
 - **hottakes-pov-library** — the positions Hot Takes argues from. This is
-  questions 5, 6 and 7 written down as claims they would defend. It is the
+  the Move 1 positions and the answers to questions 1-3 written down as claims they would defend. It is the
   difference between a take and a summary.
-- **brand-icp** — who this is for, from questions 3 and 4: the title, the
+- **brand-icp** — who this is for, from the dump and question 4: the title, the
   situation they are in, the company shape, and who is explicitly NOT a fit.
   Prospecting scores against this.
 - **gtm-you** — the operator themselves: name, role, what their business does,
   in JSON as the doc's existing shape shows. Watch drafts speak as this
   person.
 - **operator-positioning** — the frame outreach and Watch replies speak from: what
-  the operator walks in offering, in one or two tight paragraphs. From
-  questions 2, 4 and 6.
-- **about** — the company profile, from questions 1, 2, 4 and 6. Every writer
+  the operator walks in offering, in one or two tight paragraphs. From the
+  dump and questions 2-3.
+- **about** — the company profile, from the dump. Every writer
   reads it before drafting.
 - **gtm-outreach** — HOW Watch reply drafts should be written: tone, length,
   what a first message may and may not do. Two or three tight paragraphs from
@@ -283,8 +294,8 @@ They can, and it costs them nothing to say so. Do not bargain, do not ask for
 
 - the app keeps its shipped default voice documents until this is finished, so
   anything it writes meanwhile will not sound like them yet, and
-- everything captured so far is saved — asking to continue the interview, any
-  time, in any chat, picks it up.
+- everything captured so far is saved in \`onboarding-notes\`, and asking to
+  continue the interview, any time, in any chat, picks it up from there.
 
 Then stop, in that turn.
 
