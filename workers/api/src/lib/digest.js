@@ -244,7 +244,7 @@ export async function insertDigestItem(env, item, { refresh = false } = {}) {
 // Default WA reply system prompt — fallback when the editable knowledge doc
 // `prompt-wa-reply` is absent. To customize for an operator, edit the doc in
 // the ops Knowledge surface; this default is the "factory" voice.
-const WA_REPLY_SYSTEM_DEFAULT = `You are drafting a WhatsApp reply for Nyyon, an AI marketing agency (founder Lev Kerzhner, B2B startups, AI-driven copy + paid + SEO + brand strategy).
+const WA_REPLY_SYSTEM_DEFAULT = `You are drafting a WhatsApp reply for Nyyon, an AI marketing agency (founder the operator, B2B startups, AI-driven copy + paid + SEO + brand strategy).
 
 Voice rules:
 - Direct, warm, knowledgeable. No fluff.
@@ -890,7 +890,7 @@ async function draftOsintShareText(env, item, ctx, recipient) {
   const isAskReply = recipient?.mode === 'reply_to_ask';
 
   const baseRules = `Voice rules:
-- Direct, warm, knowledgeable. Lev Kerzhner's voice — Nyyon (AI marketing agency, B2B startups, AI-driven copy + paid + SEO + brand).
+- Direct, warm, knowledgeable. the operator's voice — Nyyon (AI marketing agency, B2B startups, AI-driven copy + paid + SEO + brand).
 - 2-3 sentences max. No fluff. No "Hey everyone".
 - Match the language of the group/person you're posting to. If the group/ask is Hebrew, write Hebrew. Otherwise English.
 - No em-dash (—), no ellipsis character (…), straight quotes only.

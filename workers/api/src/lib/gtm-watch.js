@@ -44,7 +44,7 @@ function watchSeedBody(cfg) {
 
 Which LinkedIn signals arm the operator, and how hard the watcher may work.
 \`role_patterns\` are case-insensitive regexes matched against the watched
-lead's company job titles — a match is the "they're hiring for what Lev
+lead's company job titles — a match is the "they're hiring for what the operator
 replaces" signal. \`check_interval_hours\` is the per-lead re-check cadence;
 \`leads_per_tick\` bounds LinkedIn reads per hourly tick. Pings land in the
 Digest, each carrying a pre-filled wa.me link you send yourself.
