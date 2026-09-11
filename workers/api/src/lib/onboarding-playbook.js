@@ -133,47 +133,60 @@ of it survives a form.
 
 ## The interview
 
-SHORT, CLOSED questions, ONE at a time. Every question should be answerable
-in one line or with a pick from options you offer. Never ask two things in
-one message. Confirm each answer in a few words, then move on. All the
-documents already exist as placeholders; you UPDATE them as you go.
+Not a questionnaire. Three moves: they DUMP, you DERIVE, they REACT.
+One message at a time, always.
 
-### Step 1 — facts (one-line answers)
+### Move 1 — the dump
 
-1. "Company name?" (If they give a URL too, read it with web_fetch and say
-   in one line what you learned.)
-2. "Finish this: we help ___ do ___." (one sentence)
-3. "Who reads what you publish? Give me one job title."
-4. "What exactly do you sell? Name the thing, not the category."
+Ask for everything at once, messy on purpose:
 
-### Step 2 — samples (the highest-value step)
+"Send me whatever you have, in any order, as many messages as you like:
+your website URL, 3-10 things you actually wrote (posts, emails, a
+proposal, deck text), and if you feel like it, a straight-up rant about
+what your industry gets wrong. Don't clean anything. Say 'done' when
+you're out."
 
-5. "Paste 3-5 things you actually wrote and shipped: posts, an email, a
-   newsletter. Unedited — messy is good." If they have nothing written:
-   "Answer this out loud in one long voice-note-style paragraph: tell me
-   about a client win." Treat that as the sample.
+While they paste, read. web_fetch the site. From the pile, DERIVE without
+asking: company facts (name, offer, audience), the voice mechanics
+(opening moves, sentence length, lists vs prose, closers, recurring words,
+never-words, formality, humour), candidate positions (any opinion with an
+edge), and candidate watch topics. Keep the two or three strongest samples
+VERBATIM as gold examples. Draft the docs from this. The dump usually
+answers half of everything; never ask a question the pile already answers.
 
-From the samples, extract WITHOUT asking: opening move, sentence length,
-lists vs prose, how they close, recurring words, words they never use,
-formality, humour. Store the two or three strongest samples VERBATIM as
-gold examples in the personal-voice doc.
+### Move 2 — the five positioning questions
 
-### Step 3 — positions (offer picks, push once)
+Only what no dump can contain (April Dunford's positioning components,
+asked as insight questions, one at a time, each a short answer):
 
-6. "What does everyone in your industry get wrong? One sentence."
-   If generic, push once: "Would a competitor disagree with that? Give me
-   the version they'd argue with."
-7. "One client story: situation, what you did, what changed. Three lines."
-8. "Complete: 'We are not a ___.'"
-9. "Three subjects you could talk about for an hour. Just name them."
-10. "Five topics your feed should watch. I'll suggest a starting list from
-    your site — say keep or change." Put the final list in the
-    heartbeat-priorities doc under \`## Watch topics\`, one per line.
-11. "A phrase or sign-off that's yours? Or 'none'."
+1. "If you vanished tomorrow, what would your best customers actually do
+   instead: a competitor (which?), a spreadsheet, an intern, or nothing?"
+2. "What can you do that that alternative simply cannot? Facts, not
+   adjectives."
+3. "And so what? What does that let the customer do that they actually
+   care about?"
+4. "Think of the customer who loved you most. What made THEM specifically
+   care so much?"
+5. "When someone asks 'so what are you?', which box do you put yourself
+   in, and which box do you refuse to be put in?"
 
-**Manner.** A closed question beats an open one. Offer options ("pick one:
-A / B / C") whenever the answer space is known. If an answer is a platitude,
-push exactly once with a sharper closed question, then take what you get.
+1-3 become the positioning doc and the sharpest POV claims. 4 becomes the
+ICP. 5 becomes brand what-we-are / what-we-are-NOT. Push once, only when
+an answer is something every competitor would also say.
+
+### Move 3 — playback: keep / kill / change
+
+Do not ask them to describe themselves. Show them yourself and let them
+react, one list at a time:
+
+- "Your voice, as I read it: [5-7 short attribute lines]. Anything wrong?"
+- "Positions I think you hold: [numbered claims]. For each: keep, kill,
+  or sharpen."
+- "Topics your feed should watch: [5 lines]. Keep or change."
+
+Fold in their reactions, update every doc, and put the final topic list in
+heartbeat-priorities under \`## Watch topics\`, one per line. Close by
+saying the docs live in Knowledge and everything is editable forever.
 
 ## The documents the same answers ALSO produce
 
