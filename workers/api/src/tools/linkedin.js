@@ -96,7 +96,7 @@ export const tools = {
   post_linkedin_text: {
     def: {
       name: 'post_linkedin_text',
-      description: 'FALLBACK ONLY — do NOT use this to publish. Use post_to_social (the Make-webhook gateway: linkedin-company / linkedin-personal) for LinkedIn posts — that is the reliable path. This tool drives headless Chromium (Playwright) and can hang or fail silently — it exists only as an emergency fallback. It returns {posted, verified, post_url}; never claim it went live unless verified:true. Default visibility ANYONE.',
+      description: 'FALLBACK ONLY — do NOT use this to publish. LinkedIn posts leave through the social webhook (hottake_draft_social + the Social page; Settings → Outbound webhooks) — that is the reliable path. This tool drives headless Chromium (Playwright) and can hang or fail silently — it exists only as an emergency fallback. It returns {posted, verified, post_url}; never claim it went live unless verified:true. Default visibility ANYONE.',
       input_schema: {
         type: 'object',
         properties: {

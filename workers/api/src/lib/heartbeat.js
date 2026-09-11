@@ -695,7 +695,7 @@ export async function signalToBlog(env, signalId) {
     await env.DB.prepare(`UPDATE aeo_questions SET expert_context_json=? WHERE slug=?`).bind(JSON.stringify(ctx), slug).run();
   }
   await env.DB.prepare(`UPDATE osint_signals SET status='actioned' WHERE id=?`).bind(signalId).run();
-  return { ok: true, slug, question: sig.suggested_angle || sig.title, read_full_article: !!sig.full_text, note: 'Created as an AEO question (priority 2), seeded with the article\'s real content. Run aeo_start_interview to add the operator\'s take, or write directly.' };
+  return { ok: true, slug, question: sig.suggested_angle || sig.title, read_full_article: !!sig.full_text, note: 'Saved as a seeded article question. Write it through Hot Takes (pin it as a topic, or ask Nyo to write the article directly).' };
 }
 
 // Draft a social post reacting to a signal, in Nyyon's voice. Draft only —

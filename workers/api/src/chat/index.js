@@ -9,14 +9,6 @@ import { loadModelConfig } from '../lib/model-config.js';
 import { loadPlannerPersona } from '../lib/planner-persona.js';
 import { deriveTitle } from '../lib/conversations.js';
 
-// Tools the Daily Planner agent is cut off from — the plan is self-contained
-// (its own daily_plans), NOT synced to the real calendar or task list for now.
-const PLANNER_DENY_TOOLS = new Set([
-  'list_calendar_events', 'read_calendar_event', 'write_calendar_event', 'delete_calendar_event',
-  'get_meeting_reminders', 'set_meeting_reminders',
-  'list_tasks', 'add_task', 'update_task',
-]);
-
 const SYSTEM = `You are Nyo, the chatbot at the center of the Nyyon Command Center.
 
 The Command Center is an operator backstage hub. You sit at the center, surrounded by **modules** (the product areas in the sidebar: Hot Takes, Prospecting (with the Watch tab pinging you drafted responses you send yourself) and the Daily Planner) and **tools** (your real capabilities across hot takes, gtm/prospecting, outreach, whatsapp, linkedin, knowledge). A handful of tools load up front; the rest load on demand. When you need a capability you don't currently see, call the tool-search tool (regex over tool names + descriptions, e.g. \`hottake\`, \`whatsapp\`, \`linkedin\`, \`gtm\`) to load it, then call it. Search proactively, never say a tool is missing without searching first.
@@ -74,10 +66,12 @@ const TOOL_TIMEOUT_MS = 35_000;   // any single tool call
 // longer budget the chat loop false-times-out at 35s, Nyo sees an error, retries,
 // times out again, and gives up mid-write ("couldn't expand into an article").
 const SLOW_TOOLS = new Set([
-  'write_blog_post', 'article_from_social_post', 'publish_blog_post',
-  'draft_social_posts', 'deploy_public_site',
-  // image pipelines: N candidates (+ optional vision judge) run ~30-90s
-  'regenerate_blog_image', 'reshape_blog_post', 'generate_social_card',
+  // the article writer + its figure pipeline routinely runs 60-90s
+  'hottake_write_article', 'hottake_publish_website', 'hottake_draft_social',
+  // feed refresh fetches + scores every source in one call
+  'run_heartbeat',
+  // multi-leg enrichment chains (serp + pdl + twilio + org chart)
+  'gtm_enrich_lead', 'gtm_org_chart',
 ]);
 const SLOW_TOOL_TIMEOUT_MS = 150_000;   // writer/deploy pipelines
 
@@ -148,7 +142,6 @@ export async function handleChat(env, { messages, conversation_id, tier, agent =
       let activeCfg = cfg;
       let tools = allTools;
       // Daily Planner is disconnected from the calendar + task list for now.
-      if (agent === 'daily-planner') tools = tools.filter((t) => !PLANNER_DENY_TOOLS.has(t.name));
       let notedOk  = false;   // close the credit circuit at most once per turn
       send('start', { conversation_id: convId, tier: cfg.tier, model: cfg.model, tools: tools.map((t) => t.name) });
 
