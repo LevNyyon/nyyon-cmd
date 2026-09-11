@@ -68,10 +68,12 @@ const TOOL_TIMEOUT_MS = 35_000;   // any single tool call
 const SLOW_TOOLS = new Set([
   // the article writer + its figure pipeline routinely runs 60-90s
   'hottake_write_article', 'hottake_publish_website', 'hottake_draft_social',
+  // writer-LLM wizard steps (angle doc + brief) can pass 35s on the big model
+  'hottake_draft_take', 'hottake_build_brief',
   // feed refresh fetches + scores every source in one call
-  'run_heartbeat',
-  // multi-leg enrichment chains (serp + pdl + twilio + org chart)
-  'gtm_enrich_lead', 'gtm_org_chart',
+  'run_heartbeat', 'write_heartbeat_source',
+  // multi-leg enrichment chains (serp + pdl + twilio + org chart), per lead or batched
+  'gtm_enrich_lead', 'gtm_enrich_batch', 'gtm_org_chart',
 ]);
 const SLOW_TOOL_TIMEOUT_MS = 150_000;   // writer/deploy pipelines
 
@@ -90,6 +92,21 @@ const CLAIM_RE = /(draft (is|was) (written|saved)|saved (as a draft|in your|to y
 // (mutates), and assign/scan_now match nothing here on purpose.
 const READONLY_PREFIX = /^(list_|read_|get_|find_|search_|query_|recent_|digest_stats|kpi_outreach_status|kpi_outreach_log|li_outreach_scheduled?\b|li_outreach_funnel|li_outreach_conversations|li_outreach_buyer_titles|li_outreach_signal_feed\b|li_outreach_context\b|li_outreach_sequences\b|li_outreach_bites\b|gtm_watch_list|outreach_collect|tool_search)/;
 const isMutatingTool = (name) => !READONLY_PREFIX.test(String(name || ''));
+
+// Force-tools heuristic: when the operator's message is an ACTION or DATA
+// ask, the first hop MUST call a tool (tool_choice "any") — the tool-search
+// tool is always present, so "no relevant tool loaded" resolves to searching
+// for one instead of improvising an answer. Later hops run free so the model
+// can still speak. Conversational replies (an answer to Nyo's own question,
+// smalltalk) are exempt via the pattern.
+const ACTION_INTENT_RE = /(show|list|check|read|fetch|get|pull|add|create|write|draft|update|edit|delete|remove|run|refresh|publish|post|send|import|install|verify|search|find|look up|schedule|plan|score|enrich|scan|sync|what('| i)?s (in|on|the)|how many|status|מה |הצג|תבדוק|בדוק|תוסיף|הוסף|תריץ|הרץ|צור|כתוב|עדכן|מחק|רענן|פרסם|שלח|חפש|תכנן)/i;
+const SMALLTALK_RE = /^(thanks|thank you|ok(ay)?|cool|great|nice|got it|sure|yes|no|hi|hey|hello|תודה|סבבה|אחלה|כן|לא|היי|שלום|טוב)[\s!.]*$/i;
+function wantsTools(messages) {
+  const last = [...messages].reverse().find((m) => m.role === 'user');
+  const text = typeof last?.content === 'string' ? last.content : '';
+  if (!text || SMALLTALK_RE.test(text.trim())) return false;
+  return ACTION_INTENT_RE.test(text);
+}
 
 const LLM_TIMEOUT_MS  = 60_000;   // any single provider hop
 
@@ -156,7 +173,7 @@ export async function handleChat(env, { messages, conversation_id, tier, agent =
       let errored = false;             // a hard provider error already surfaced to the operator
 
       for (let hop = 0; hop < 8; hop++) {
-        const res = await callLLM(env, convo, tools, activeCfg, personaSystem, agent === 'daily-planner' ? PLANNER_TOOLS : null);
+        const res = await callLLM(env, convo, tools, activeCfg, personaSystem, agent === 'daily-planner' ? PLANNER_TOOLS : null, hop === 0 && wantsTools(convo));
         if (!res.ok) {
           const errText = await res.text();
           const cls = activeCfg.provider === 'anthropic' ? classifyLlmError(res.status, errText) : null;
@@ -312,9 +329,9 @@ function resolveTier(env, tier, mc = null) {
   return { tier: 'mid', provider: 'anthropic', model: mc?.nyo_mid || env.NYO_MODEL_MID || 'claude-sonnet-5' };
 }
 
-async function callLLM(env, messages, tools, cfg, personaSystem = null, extraHot = null) {
-  if (cfg.provider === 'anthropic') return callAnthropic(env, messages, tools, cfg, personaSystem, extraHot);
-  if (cfg.provider === 'openai')    return callOpenAI(env, messages, tools, cfg, personaSystem);
+async function callLLM(env, messages, tools, cfg, personaSystem = null, extraHot = null, forceTools = false) {
+  if (cfg.provider === 'anthropic') return callAnthropic(env, messages, tools, cfg, personaSystem, extraHot, forceTools);
+  if (cfg.provider === 'openai')    return callOpenAI(env, messages, tools, cfg, personaSystem, forceTools);
   return new Response(`Unknown provider: ${cfg.provider}`, { status: 500 });
 }
 
@@ -344,7 +361,7 @@ const PLANNER_TOOLS = new Set([
 
 const TOOL_SEARCH = { type: 'tool_search_tool_regex_20251119', name: 'tool_search_tool_regex' };
 
-async function callAnthropic(env, messages, tools, cfg, personaSystem = null, extraHot = null) {
+async function callAnthropic(env, messages, tools, cfg, personaSystem = null, extraHot = null, forceTools = false) {
   // Model comes from the Low/Mid/High switch (mid → Sonnet, high → Opus). Chat is
   // multi-hop and bursty; Sonnet's higher per-tier ITPM absorbs the hop loop, so
   // it's the default (mid) tier. Both are env-overridable (NYO_MODEL_MID/HIGH).
@@ -367,6 +384,9 @@ async function callAnthropic(env, messages, tools, cfg, personaSystem = null, ex
     max_tokens: 4096,
     system: [{ type: 'text', text: personaSystem || SYSTEM, cache_control: { type: 'ephemeral' } }],
     tools: toolPayload,
+    // An action-shaped ask MUST begin with a tool (or a tool search);
+    // narration without action is the failure this forbids.
+    ...(forceTools ? { tool_choice: { type: 'any' } } : {}),
     messages,
   }, { timeoutMs: LLM_TIMEOUT_MS });
 }
@@ -375,7 +395,7 @@ async function callAnthropic(env, messages, tools, cfg, personaSystem = null, ex
 // (tools[] format differs) and response shape on the way out (tool_calls →
 // tool_use blocks, finish_reason → stop_reason) so the loop sees Anthropic
 // shape no matter which provider answered.
-async function callOpenAI(env, messages, tools, cfg = {}, personaSystem = null) {
+async function callOpenAI(env, messages, tools, cfg = {}, personaSystem = null, forceTools = false) {
   // Works for any OpenAI-compatible endpoint; with no cfg it falls back to OpenAI proper.
   const model  = cfg.model  || env.LLM_MODEL || env.OPENAI_MODEL || 'gpt-4o';
   const base   = cfg.baseUrl || 'https://api.openai.com/v1';
@@ -416,7 +436,7 @@ async function callOpenAI(env, messages, tools, cfg = {}, personaSystem = null) 
 
   // Token cap field varies: OpenAI gpt-5.x wants max_completion_tokens; Ollama's
   // OpenAI shim wants max_tokens. cfg.tokenParam selects the right one per tier.
-  const reqBody = { model, messages: openaiMessages, tools: openaiTools.length ? openaiTools : undefined };
+  const reqBody = { model, messages: openaiMessages, tools: openaiTools.length ? openaiTools : undefined, ...(forceTools && openaiTools.length ? { tool_choice: 'required' } : {}) };
   reqBody[tokenField] = 4096;
   const upstream = await llmTransportOpenAICompat(env, {
     base, apiKey, body: reqBody,

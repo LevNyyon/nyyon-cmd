@@ -15,11 +15,12 @@ export const tools = {
   write_heartbeat_source: {
     def: {
       name: 'write_heartbeat_source',
-      description: "Add or edit an industry-awareness feed source. New rss source: {kind:'rss', name, url}. New Google News topic: {kind:'gnews', name, query} (the feed URL is built from the query). Edit: pass id + the fields to change (enabled:false disables without deleting).",
-      input_schema: { type: 'object', properties: { id: { type: 'string' }, kind: { type: 'string', enum: ['rss', 'gnews'] }, name: { type: 'string' }, url: { type: 'string' }, query: { type: 'string', description: 'gnews only — plain search query' }, theme: { type: 'string' }, enabled: { type: 'boolean' } }, required: [] },
+      description: "Add or edit an industry-awareness feed source. New rss source: {kind:'rss', name, url}. New Google News topic: {kind:'gnews', name, query} (the feed URL is built from the query). Edit: pass id + the fields to change (enabled:false disables without deleting). By default the feed refreshes immediately after the write; when adding SEVERAL sources in one go, pass refresh:false on all but the last (or finish with one run_heartbeat).",
+      input_schema: { type: 'object', properties: { id: { type: 'string' }, kind: { type: 'string', enum: ['rss', 'gnews'] }, name: { type: 'string' }, url: { type: 'string' }, query: { type: 'string', description: 'gnews only — plain search query' }, theme: { type: 'string' }, enabled: { type: 'boolean' }, refresh: { type: 'boolean', description: 'default true — fetch + score right after the write; false when batching several adds' } }, required: [] },
     },
     run: async (env, input) => {
       const source = await writeHeartbeatSource(env, input || {});
+      if (input?.refresh === false) return { source, refreshed: 'skipped (batching) — run_heartbeat when done' };
       // Fill the feed NOW — a freshly added source that sits empty until the
       // next hourly tick reads as broken to a new operator.
       let refreshed = null;
