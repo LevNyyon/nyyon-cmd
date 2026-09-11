@@ -55,7 +55,7 @@ const WORKFLOWS = [
   { name: 'Daily AEO publish', kind: 'automated', trigger: 'cron · 0 6 * * *',
     steps: 'publish any AEO article whose interview is captured + scheduled straight to the website (readyOnly — never auto-interviews or nags, never double-posts)',
     touches: 'aeo_questions, blog_posts',
-    knowledge: ['nyyon-brand-voice', 'nyyon-voice-lev', 'nyyon-aeo-playbook', 'nyyon-brand'], run_slug: 'aeo-daily-writer' },
+    knowledge: ['nyyon-brand-voice', 'operator-voice', 'nyyon-aeo-playbook', 'nyyon-brand'], run_slug: 'aeo-daily-writer' },
 
   { name: 'Hot Takes scheduler', kind: 'automated', trigger: 'cron · :00 hourly',
     steps: 'scan due scheduled releases → publish the website leg (blog pipeline — REAL, same trust as the Blog Approve button) + fire due LinkedIn legs (social gateway → outbox; DRY-RUN unless the hottakes.live feature flag is true — dry runs log hottake_dryrun events only)',
@@ -125,7 +125,7 @@ const MODULES = [
 
 // ── Tool grouping (ordered — first match wins) + per-group knowledge deps ────
 const TOOL_GROUPS = [
-  { group: 'GTM',                 re: /^gtm_/,                                             knowledge: ['gtm-outreach', 'gtm-you', 'gtm-watch', 'brand-icp', 'lev-positioning'] },
+  { group: 'GTM',                 re: /^gtm_/,                                             knowledge: ['gtm-outreach', 'gtm-you', 'gtm-watch', 'brand-icp', 'operator-positioning'] },
   // Before the WhatsApp group: outreach_wa_* would otherwise be swallowed by its
   // `wa_` pattern and split from the rest of the Outreach pool.
   { group: 'Outreach',            re: /^outreach_/,                                        knowledge: ['outreach-reply-drafting', 'outreach-promotion', 'outreach-sentiment', 'gtm-outreach'] },
@@ -136,8 +136,8 @@ const TOOL_GROUPS = [
   { group: 'Digest',             re: /digest/,                                            knowledge: [] },
   { group: 'OSINT',              re: /osint|heartbeat|mention/,                           knowledge: ['industry-pulse', 'heartbeat-priorities'] },
   { group: 'CRM & Pipeline',      re: /client|contact|pipeline|deal|crm|_stage/,          knowledge: [] },
-  { group: 'Editorial (Blog / AEO)', re: /blog|aeo|article|brain|publish|interview|figure|cover/, knowledge: ['nyyon-brand-voice', 'nyyon-voice-lev', 'nyyon-aeo-playbook', 'nyyon-brand'] },
-  { group: 'Social',             re: /social|post_to|linkedin_text|_post$/,        knowledge: ['nyyon-brand-voice', 'nyyon-voice-lev'] },
+  { group: 'Editorial (Blog / AEO)', re: /blog|aeo|article|brain|publish|interview|figure|cover/, knowledge: ['nyyon-brand-voice', 'operator-voice', 'nyyon-aeo-playbook', 'nyyon-brand'] },
+  { group: 'Social',             re: /social|post_to|linkedin_text|_post$/,        knowledge: ['nyyon-brand-voice', 'operator-voice'] },
   { group: 'Calendar',           re: /calendar|meeting|reminder/,                         knowledge: [] },
   { group: 'Funnel & Web',        re: /funnel|identity|identities|web_|session|conversion|deploy|website/, knowledge: [] },
   { group: 'Finance',            re: /finance|cashflow/,                                  knowledge: [] },

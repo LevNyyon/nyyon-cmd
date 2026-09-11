@@ -1347,7 +1347,7 @@ export const api = {
   // operator's own instruction instead of a blind regenerate.
   hotTakeRefine: (id: string, stage: 'take' | 'brief', direction: string) =>
     j<{ package?: HotTakePackage; error?: string }>(`/api/hot-takes/packages/${encodeURIComponent(id)}/refine`, { method: 'POST', body: JSON.stringify({ stage, direction }) }),
-  hotTakeWriteArticle: (id: string, voice?: 'lev' | 'house') =>
+  hotTakeWriteArticle: (id: string, voice?: 'personal' | 'house') =>
     j<{ ok?: boolean; slug?: string; error?: string }>(`/api/hot-takes/packages/${encodeURIComponent(id)}/write-article`, { method: 'POST', body: JSON.stringify({ voice }) }),
   hotTakeReviewScan: (id: string) =>
     j<{ package?: HotTakePackage; open_claims?: number; flags?: number; error?: string }>(`/api/hot-takes/packages/${encodeURIComponent(id)}/review-scan`, { method: 'POST' }),

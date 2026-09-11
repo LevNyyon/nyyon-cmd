@@ -108,7 +108,7 @@ away and come back to it any time.
 
 - **nyyon-brand-voice** — the company's position and how the company writes.
   Read by every article and every company social post.
-- **nyyon-voice-lev** — how the OPERATOR writes as themselves. Read when a
+- **operator-voice** — how the OPERATOR writes as themselves. Read when a
   post goes out under their own name.
 - **writing-style-rules** — hard constraints. Read by everything, highest
   priority, overrides the other two.
@@ -133,68 +133,47 @@ of it survives a form.
 
 ## The interview
 
-Ask in this order. Facts first because they need no thinking and get the
-operator moving. Samples second because they carry the most signal and make the
-next step feel earned. Positions last because they need the most trust.
+SHORT, CLOSED questions, ONE at a time. Every question should be answerable
+in one line or with a pick from options you offer. Never ask two things in
+one message. Confirm each answer in a few words, then move on. All the
+documents already exist as placeholders; you UPDATE them as you go.
 
-### Step 1 — the facts (short answers, no follow-ups needed)
+### Step 1 — facts (one-line answers)
 
-1. Company name, and the URL if there is one. If they give a URL, READ IT before the next question and use what it says instead of asking them to repeat it. Say in one line what you learned, so they know you did.
-2. In one sentence a customer would recognise: what do you do for whom?
-3. Who is the writing FOR? Not demographics: the job title and the situation
-   they are in when they read it.
-4. What do you sell, concretely? Name the deliverable, not the category.
+1. "Company name?" (If they give a URL too, read it with web_fetch and say
+   in one line what you learned.)
+2. "Finish this: we help ___ do ___." (one sentence)
+3. "Who reads what you publish? Give me one job title."
+4. "What exactly do you sell? Name the thing, not the category."
 
-### Step 2 — the samples (the highest-value step)
+### Step 2 — samples (the highest-value step)
 
-Ask for **three to five pieces of their own writing**, pasted raw. Anything
-they actually wrote and shipped: LinkedIn posts, a newsletter, a landing page,
-a long client email, an internal memo. Explicitly say: unedited, including the
-ones they think are messy, because the messiness is the voice.
+5. "Paste 3-5 things you actually wrote and shipped: posts, an email, a
+   newsletter. Unedited — messy is good." If they have nothing written:
+   "Answer this out loud in one long voice-note-style paragraph: tell me
+   about a client win." Treat that as the sample.
 
-If they have nothing written, fall back to: ask them to answer question 6
-below OUT LOUD in a voice note or a long unedited paragraph, and treat that as
-the sample. Speech is closer to their real voice than anything they would
-compose for a form.
+From the samples, extract WITHOUT asking: opening move, sentence length,
+lists vs prose, how they close, recurring words, words they never use,
+formality, humour. Store the two or three strongest samples VERBATIM as
+gold examples in the personal-voice doc.
 
-From the samples, extract and write down (do NOT ask about any of these):
-- Opening move: do they open on a claim, a question, a number, a story?
-- Sentence length and paragraph size. Do they use fragments?
-- Do they use lists, or prose?
-- How they close: a question, a call, a flat statement, a signature line?
-- Recurring words and constructions they clearly like.
-- Words they conspicuously never use.
-- Formality, contractions, profanity, humour.
-- How they handle links, mentions, and formatting.
+### Step 3 — positions (offer picks, push once)
 
-Then pick the two or three strongest samples and store them VERBATIM as gold
-examples in the nyyon-voice-lev doc. Verbatim examples beat every adjective:
-they give the writer a cadence to match instead of a description to interpret.
+6. "What does everyone in your industry get wrong? One sentence."
+   If generic, push once: "Would a competitor disagree with that? Give me
+   the version they'd argue with."
+7. "One client story: situation, what you did, what changed. Three lines."
+8. "Complete: 'We are not a ___.'"
+9. "Three subjects you could talk about for an hour. Just name them."
+10. "Five topics your feed should watch. I'll suggest a starting list from
+    your site — say keep or change." Put the final list in the
+    heartbeat-priorities doc under \`## Watch topics\`, one per line.
+11. "A phrase or sign-off that's yours? Or 'none'."
 
-### Step 3 — the positions (the part only a conversation gets)
-
-These need follow-ups. A first answer is almost always a generic version of a
-real belief; the second answer is the real one. Push once on each.
-
-5. What does everyone in your industry get wrong? Where is the consensus you
-   think is lazy or false?
-6. Tell me about a time a client got real value from you. What was the
-   situation, what did you actually do, what changed? (Concrete. Names of
-   things, not categories.)
-7. What do you refuse to do, or refuse to be called? What competitor pitch
-   makes you roll your eyes?
-8. What are you NOT? Complete the sentence: "We are not a ___."
-9. What are the three or four subjects you could talk about for an hour
-   without preparing?
-10. What should the Hot Takes topic feed watch for you? Get five or fewer plain search topics: their company name, the product category, named competitors, the technology they depend on, a regulation or market that moves them. Derive a first list from their site and their earlier answers, show it, and let them correct it. This is the ONLY question the feed needs and without it their feed watches somebody else's industry.
-11. Is there a phrase, a joke, or a sign-off that is yours? Something a reader
-    would recognise?
-
-**How to push.** When an answer is abstract ("we help companies scale"), do not
-accept it and move on. Ask for the instance: "Give me one company and what
-actually changed for them." When an answer is a platitude everyone in their
-market would also claim, say so plainly and ask what they believe that a
-competitor would argue with. A position nobody would dispute is not a position.
+**Manner.** A closed question beats an open one. Offer options ("pick one:
+A / B / C") whenever the answer space is known. If an answer is a platitude,
+push exactly once with a sharper closed question, then take what you get.
 
 ## The documents the same answers ALSO produce
 
@@ -218,7 +197,7 @@ the operator lands in an app watching somebody else's industry.
 - **gtm-you** — the operator themselves: name, role, what their business does,
   in JSON as the doc's existing shape shows. Watch drafts speak as this
   person.
-- **lev-positioning** — the frame outreach and Watch replies speak from: what
+- **operator-positioning** — the frame outreach and Watch replies speak from: what
   the operator walks in offering, in one or two tight paragraphs. From
   questions 2, 4 and 6.
 - **about** — the company profile, from questions 1, 2, 4 and 6. Every writer
@@ -244,7 +223,7 @@ operator), how-we-write mechanics (derived), topics owned (from 9), and any
 company-specific banned phrasing (from 7, 8 — for example a firm that refuses
 to be called "small" or "boutique").
 
-**nyyon-voice-lev** gets: the structure of their post (derived), their own
+**operator-voice** gets: the structure of their post (derived), their own
 never-list (derived from what they conspicuously avoid), and the verbatim
 gold examples.
 
@@ -255,14 +234,14 @@ surfaced, plus the hard constraints derived from their samples.
 it with write_knowledge to the exact slug above only after the operator
 confirms. Do not paste the universal anti-AI blocks into a draft — the system
 appends them mechanically the first time writing-style-rules and
-nyyon-voice-lev are saved.
+operator-voice are saved.
 
 ## The bar before finishing
 
 Read the drafts back and check honestly:
 - Could a competitor publish this nyyon-brand-voice doc unchanged? If yes,
   the perspective section is still generic. Go back to question 5.
-- Does the nyyon-voice-lev doc contain at least two verbatim samples? Without
+- Does the operator-voice doc contain at least two verbatim samples? Without
   them it is a description, not a voice.
 - Is there a single invented fact, number, client or claim anywhere? Remove it.
 

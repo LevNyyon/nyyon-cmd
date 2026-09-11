@@ -134,6 +134,9 @@ export async function finishSetup(env, { reason = 'setup', tz = null } = {}) {
     const { seedKpiConfig } = await import('./kpi.js');
     await seedKpiConfig(env, { tz });
   } catch { /* planner falls back to code defaults; not worth failing finish */ }
+  // Every operator doc exists from minute one as a placeholder scaffold —
+  // the interview fills them; nothing is missing or invisible.
+  try { const { seedOperatorDocs } = await import('./knowledge-seeds.js'); await seedOperatorDocs(env); } catch { /* interview can still create them */ }
   const r = await markSetupComplete(env, { reason: String(reason || 'setup').slice(0, 40) });
   return { ok: true, ...r };
 }

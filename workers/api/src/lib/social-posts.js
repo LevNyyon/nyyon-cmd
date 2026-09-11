@@ -3,7 +3,7 @@
 // Flow:
 //   1. A blog post goes live → publish.js calls generateSocialPostsForBlog().
 //      We draft ONE post per channel (company LinkedIn + company Facebook in
-//      brand voice, personal LinkedIn in Lev's teaser voice) and save them as
+//      brand voice, personal LinkedIn in the operator's teaser voice) and save them as
 //      `draft` rows. Idempotent — re-publishing never duplicates.
 //   2. Operator reviews/edits in the Social module and approves.
 //   3. approveAndPush() POSTs through the Make-webhook gateway
@@ -25,9 +25,9 @@ import { callOpenAIJson } from './openai.js';
 // The three channels every published article fans out to. `voice` picks which
 // guide doc drives the draft; `label` is shown in the UI + outbox.
 export const CHANNELS = [
-  { key: 'linkedin-company',  network: 'LinkedIn', voice: 'brand', label: 'Nyyon LinkedIn (company page)' },
-  { key: 'facebook-company',  network: 'Facebook', voice: 'brand', label: 'Nyyon Facebook (company page)' },
-  { key: 'linkedin-personal', network: 'LinkedIn', voice: 'lev',   label: 'Lev Kerzhner LinkedIn (personal)' },
+  { key: 'linkedin-company',  network: 'LinkedIn', voice: 'brand', label: 'Company LinkedIn page' },
+  { key: 'facebook-company',  network: 'Facebook', voice: 'brand', label: 'Company Facebook page' },
+  { key: 'linkedin-personal', network: 'LinkedIn', voice: 'personal', label: 'Personal LinkedIn' },
 ];
 
 import { siteBase } from './self-origin.js';
@@ -46,8 +46,8 @@ function htmlToText(html) {
 //               'news' — reacts to an industry item with Nyyon's POV (no
 //               article of ours exists yet; used for Digest-sourced drafts).
 async function draftOne(env, channel, article, voiceBody, { sourceKind = 'blog', styleRules = '' } = {}) {
-  const isLev = channel.voice === 'lev';
-  const limit = isLev ? 1300 : 1200;
+  const isPersonal = channel.voice === 'personal';
+  const limit = isPersonal ? 1300 : 1200;
   const system = [
     sourceKind === 'news'
       ? `You write a single ${channel.network} post reacting to an industry news item with Nyyon's point of view.`
@@ -63,7 +63,7 @@ async function draftOne(env, channel, article, voiceBody, { sourceKind = 'blog',
     ``,
     `RULES:`,
     `- Output ONE post as plain text. No markdown, no headings, no hashtags spam.`,
-    isLev
+    isPersonal
       ? `- First person, as Lev. TEASE one or two conclusions from the article, do NOT summarize the whole thing. Humble close.`
       : `- Company voice. Confident and concrete, one clear idea, no hype words.`,
     `- Under ${limit} characters total.`,
@@ -117,12 +117,12 @@ export async function draftSocialPostText(env, channelKey, { title, excerpt = nu
     url,
     snippet: htmlToText(String(bodyHtml || '')).slice(0, 1600),
   };
-  const [brandVoice, levVoice, styleRules] = await Promise.all([
+  const [brandVoice, personalVoice, styleRules] = await Promise.all([
     readKnowledge(env, 'nyyon-brand-voice').catch(() => null),
-    readKnowledge(env, 'nyyon-voice-lev').catch(() => null),
+    readKnowledge(env, 'operator-voice').catch(() => null),
     readKnowledge(env, 'writing-style-rules').catch(() => null),
   ]);
-  return draftOne(env, ch, article, (ch.voice === 'lev' ? levVoice : brandVoice)?.body || '', {
+  return draftOne(env, ch, article, (ch.voice === 'personal' ? personalVoice : brandVoice)?.body || '', {
     styleRules: styleRules?.body || '',
   });
 }
@@ -167,12 +167,12 @@ export async function generateSocialPostsForBlog(env, slug, { source = 'blog-pub
   const image_url = post.featured_image_url || null;
 
   const brandVoice = (await readKnowledge(env, 'nyyon-brand-voice').catch(() => null))?.body || '';
-  const levVoice   = (await readKnowledge(env, 'nyyon-voice-lev').catch(() => null))?.body || '';
+  const personalVoice   = (await readKnowledge(env, 'operator-voice').catch(() => null))?.body || '';
   const styleRules = (await readKnowledge(env, 'writing-style-rules').catch(() => null))?.body || '';
 
   const results = await Promise.all(CHANNELS.map(async (ch) => {
     try {
-      const content = await draftOne(env, ch, article, ch.voice === 'lev' ? levVoice : brandVoice, { styleRules });
+      const content = await draftOne(env, ch, article, ch.voice === 'personal' ? personalVoice : brandVoice, { styleRules });
       const id = await insertDraft(env, { blog_slug: slug, blog_title: article.title, channel: ch.key, content, image_url });
       return { channel: ch.key, ok: true, id };
     } catch (e) {
@@ -212,12 +212,12 @@ export async function generateSocialPostsForDigestItem(env, item, { force = fals
   };
 
   const brandVoice = (await readKnowledge(env, 'nyyon-brand-voice').catch(() => null))?.body || '';
-  const levVoice   = (await readKnowledge(env, 'nyyon-voice-lev').catch(() => null))?.body || '';
+  const personalVoice   = (await readKnowledge(env, 'operator-voice').catch(() => null))?.body || '';
   const styleRules = (await readKnowledge(env, 'writing-style-rules').catch(() => null))?.body || '';
 
   const results = await Promise.all(CHANNELS.map(async (ch) => {
     try {
-      const content = await draftOne(env, ch, article, ch.voice === 'lev' ? levVoice : brandVoice, { sourceKind: 'news', styleRules });
+      const content = await draftOne(env, ch, article, ch.voice === 'personal' ? personalVoice : brandVoice, { sourceKind: 'news', styleRules });
       const id = await insertDraft(env, { blog_slug: slug, blog_title: article.title, channel: ch.key, content, image_url: null });
       return { channel: ch.key, ok: true, id };
     } catch (e) {

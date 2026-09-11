@@ -1290,10 +1290,10 @@ function SocialTab({ bump, refresh, onOpenPublication }: {
 
 type SocialEntry = { post: HotTakePost; pkg: HotTakePackage & { posts: HotTakePost[]; next_action: string } };
 
-// Row labels in the Social module's style: "LinkedIn · Company" / "LinkedIn · Lev".
+// Row labels in the Social module's style: "LinkedIn · Company" / "LinkedIn · Personal".
 const ROW_LABEL: Record<string, string> = {
   'linkedin-company': 'LinkedIn · Company',
-  'linkedin-personal': 'LinkedIn · Lev',
+  'linkedin-personal': 'LinkedIn · Personal',
 };
 
 // One social post as a SLIM ROW — the Social module's DraftRow anatomy, cloned

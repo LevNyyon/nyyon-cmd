@@ -541,7 +541,7 @@ export async function topicsOfTheDay(env, { limit = 12, offset = 0, q = '', hist
 // The prose seed is assembled from the approved take + brief; composeAndSavePost
 // (the existing house-style writer) turns it into a full blog_posts DRAFT with
 // figures + cover. Hot Takes never re-implements the writer.
-export async function writeArticleFromBrief(env, id, { voice = 'lev', actor = 'operator' } = {}) {
+export async function writeArticleFromBrief(env, id, { voice = 'personal', actor = 'operator' } = {}) {
   const pkg = await readPackage(env, id);
   if (!pkg) throw new Error(`hot take ${id} not found`);
   if (!pkg.take) throw new Error('no take yet — draft and approve the take first');

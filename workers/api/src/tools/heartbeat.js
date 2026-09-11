@@ -18,7 +18,18 @@ export const tools = {
       description: "Add or edit an industry-awareness feed source. New rss source: {kind:'rss', name, url}. New Google News topic: {kind:'gnews', name, query} (the feed URL is built from the query). Edit: pass id + the fields to change (enabled:false disables without deleting).",
       input_schema: { type: 'object', properties: { id: { type: 'string' }, kind: { type: 'string', enum: ['rss', 'gnews'] }, name: { type: 'string' }, url: { type: 'string' }, query: { type: 'string', description: 'gnews only — plain search query' }, theme: { type: 'string' }, enabled: { type: 'boolean' } }, required: [] },
     },
-    run: async (env, input) => ({ source: await writeHeartbeatSource(env, input || {}) }),
+    run: async (env, input) => {
+      const source = await writeHeartbeatSource(env, input || {});
+      // Fill the feed NOW — a freshly added source that sits empty until the
+      // next hourly tick reads as broken to a new operator.
+      let refreshed = null;
+      try {
+        const { runHeartbeat } = await import('../lib/heartbeat.js');
+        const r = await runHeartbeat(env, { actor: 'nyo' });
+        refreshed = { inserted: r.inserted ?? 0, scored: r.scored ?? 0 };
+      } catch (e) { refreshed = { error: String(e?.message || e).slice(0, 200) }; }
+      return { source, refreshed };
+    },
   },
   delete_heartbeat_source: {
     def: {

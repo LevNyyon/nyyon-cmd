@@ -867,7 +867,7 @@ Return matches — STRICT — only asks this headline directly answers.`;
 
   // Draft the take. For ask replies we hand the LLM the ask context too,
   // so it weaves the answer in. For plain group posts it's just the
-  // headline + Lev's voice.
+  // headline + the operator's voice.
   const draft = await draftOsintShareText(env, item, ctx, recommended);
 
   return {
@@ -881,7 +881,7 @@ Return matches — STRICT — only asks this headline directly answers.`;
   };
 }
 
-// LLM-draft the actual message body. Lev's voice; 2-3 sentences. When
+// LLM-draft the actual message body. the operator's voice; 2-3 sentences. When
 // the chosen recipient is a "reply_to_ask", weave the ask context in.
 async function draftOsintShareText(env, item, ctx, recipient) {
   const headline = item.title || '';

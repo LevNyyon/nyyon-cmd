@@ -63,10 +63,10 @@ export async function generateAngles(env, leadId) {
   // Single sources of truth — read live, never copied into gtm-* docs:
   //   gtm-outreach      → the outreach control surface (strategy + Hebrew rules +
   //                       exemplars + self-check + pacing). GTM-specific.
-  //   lev-positioning   → the brand frame + the RETIRED marketing frame to avoid.
+  //   operator-positioning   → the brand frame + the RETIRED marketing frame to avoid.
   //                       Lives in the brand tree; shared with blog/social/aeo.
   const outreachDoc = await gtmDoc(env, 'gtm-outreach', '(outreach doc missing)');
-  const positioning = await gtmDoc(env, 'lev-positioning', '');
+  const positioning = await gtmDoc(env, 'operator-positioning', '');
   const org = people.map((p) => `${p.name} - ${p.role}`).join('\n') || '(none)';
   // Hebrew is the default for the Israeli-founder ICP; a lead is flagged
   // English per-lead via outreach_lang when a prospect is truly foreign.

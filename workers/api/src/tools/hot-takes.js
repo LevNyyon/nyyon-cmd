@@ -62,10 +62,10 @@ async function loadAngleCore(env) {
     title: 'Hot Takes — angle craft (the quality bar)',
     body: `What separates a real angle from slop. An angle must be:\n- A SPECIFIC claim only Lev can defend from his own work: name the cost, the number, the client situation.\n- Falsifiable: someone reasonable could disagree. If nobody would argue, it is a summary, not an angle.\n- Priced: what does believing this save or cost the reader, concretely.\n- Actionable tomorrow: the reader does something differently this week, not "rethinks their paradigm".\n- Contrarian ONLY when true. Never manufacture disagreement; never "X is dead".\n- In Lev's stance: builder-first, dugri, allergic to strategy-deck language.\n\nKill an angle that is: a restatement of the news, a "lessons from X" listicle frame, a pattern-label with no claim, or anything Lev could not defend on a call with a skeptical CTO.`,
   });
-  const [taste, positioning, voiceLev, styleRules] = await Promise.all([
+  const [taste, positioning, personalVoice, styleRules] = await Promise.all([
     import('../lib/aeo-taste.js').then((m) => m.readTasteProfile(env)).catch(() => null),
-    readKnowledge(env, 'lev-positioning').catch(() => null),
-    readKnowledge(env, 'nyyon-voice-lev').catch(() => null),
+    readKnowledge(env, 'operator-positioning').catch(() => null),
+    readKnowledge(env, 'operator-voice').catch(() => null),
     readKnowledge(env, 'writing-style-rules').catch(() => null),
   ]);
   // The operator's material DOMINATES: his full voice doc (a 1500-char slice
@@ -73,7 +73,7 @@ async function loadAngleCore(env) {
   // read off-voice), his style rules, positioning and learned taste. The
   // generic craft bar comes last.
   return [
-    voiceLev?.body ? `## LEV'S VOICE AND STANCES (the angle must sound like this person)\n${String(voiceLev.body).slice(0, 8000)}` : '',
+    personalVoice?.body ? `## THE OPERATOR'S VOICE AND STANCES (the angle must sound like this person)\n${String(personalVoice.body).slice(0, 8000)}` : '',
     styleRules?.body ? `## HIS WRITING RULES (hard bans bind the angle wording too)\n${String(styleRules.body).slice(0, 4000)}` : '',
     positioning?.body ? `## What the company argues (stay inside this)\n${String(positioning.body).slice(0, 2500)}` : '',
     taste ? `## His learned editorial taste (from his gradings)\n${String(taste).slice(0, 2000)}` : '',
@@ -328,7 +328,7 @@ export const tools = {
         type: 'object',
         properties: {
           id: { type: 'string' },
-          voice: { type: 'string', enum: ['lev', 'house'] },
+          voice: { type: 'string', enum: ['personal', 'house'] },
           confirm: { type: 'boolean', description: 'REQUIRED true, together with operator_words.' },
           operator_words: { type: 'string', description: 'REQUIRED: the operator\'s VERBATIM message (from this conversation, after the angle was shown) telling you to write. Quote it exactly. If the operator has not said it, STOP and wait; fabricating this quote is lying to the operator and it is logged.' },
         },
@@ -340,7 +340,7 @@ export const tools = {
         return { error: 'the angle gate is closed: the operator has not told you to write this article yet. The angle was sent to chat when the brief completed. WAIT for the operator to respond; do not call this again until they explicitly say to write, then pass confirm:true and quote their exact words in operator_words.' };
       }
       await logEvent(env, { kind: 'hottake_write_confirmed', actor: input.actor || 'operator', payload: { id: input.id, operator_words: String(input.operator_words).slice(0, 300) } });
-      return writeArticleFromBrief(env, input.id, { voice: input.voice || 'lev', actor: input.actor || 'operator' });
+      return writeArticleFromBrief(env, input.id, { voice: input.voice === 'lev' ? 'personal' : (input.voice || 'personal'), actor: input.actor || 'operator' });
     },
   },
 

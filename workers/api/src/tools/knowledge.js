@@ -66,12 +66,12 @@ export const tools = {
       // drop them. Existing docs pass through untouched — the operator's live
       // curation is theirs.
       try {
-        if ((arg.slug === 'writing-style-rules' || arg.slug === 'nyyon-voice-lev') && !(await readKnowledge(env, arg.slug))) {
+        if ((arg.slug === 'writing-style-rules' || arg.slug === 'operator-voice') && !(await readKnowledge(env, arg.slug))) {
           const body = String(arg.body || '').trim();
           if (arg.slug === 'writing-style-rules' && !body.includes('## Banned phrases')) {
             arg.body = [body, '', '## Universal rules', '', UNIVERSAL_STYLE_RULES].filter(Boolean).join('\n');
           }
-          if (arg.slug === 'nyyon-voice-lev' && !body.includes('## RULE ZERO')) {
+          if (arg.slug === 'operator-voice' && !body.includes('## RULE ZERO')) {
             arg.body = [UNIVERSAL_PERSONAL_RULES, '', body].filter(Boolean).join('\n\n');
           }
         }

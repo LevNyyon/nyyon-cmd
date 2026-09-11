@@ -13,7 +13,7 @@ import { callOpenAIJson, callOpenAIText } from './openai.js';
 import { generateBlogFeaturedImage } from './blog-images.js';
 import { now } from './util.js';
 
-// The article method doc. Lev's install grew its own; a fresh install seeds a
+// The article method doc. the original install grew its own; a fresh install seeds a
 // neutral method so the FIRST article does not die on a missing doc. Editable
 // in Knowledge like everything else. writeKnowledge is imported from db.js above.
 const ARTICLE_PLAYBOOK_SLUG = 'nyyon-aeo-playbook';
@@ -241,9 +241,9 @@ export async function composeAndSavePost(env, {
     const taste = await readTasteProfile(env);
     if (taste) brandVoiceWithTaste += `\n\n## Operator's learned editorial taste (honor this)\n${taste}`;
   } catch { /* taste profile optional */ }
-  if (voice === 'lev') {
-    const levDoc = await readKnowledge(env, 'nyyon-voice-lev').catch(() => null);
-    if (levDoc?.body) brandVoiceWithTaste += `\n\n## WRITE IN LEV'S VOICE (this article opted in)\n${levDoc.body}`;
+  if (voice === 'personal' || voice === 'lev') {
+    const personalDoc = await readKnowledge(env, 'operator-voice').catch(() => null);
+    if (personalDoc?.body) brandVoiceWithTaste += `\n\n## WRITE IN THE OPERATOR'S PERSONAL VOICE (this article opted in)\n${personalDoc.body}`;
   }
 
   // The hand-written draft becomes the "expert interview" — the primary source
@@ -383,7 +383,7 @@ Return ONE JSON object, no prose, no code fence:
 
 Hard rules: no em-dashes or en-dashes (use hyphens or restructure). No emoji, no exclamation marks. Banned phrases: revolutionary, game-changing, disruptive, next-gen, cutting-edge, world-class, leverage (as a verb), synergy, unlock, in today's world, dive in, in conclusion. Verbs over adjectives. Lead each section with its point.`;
 
-export async function expandPostWithFaq(env, { slug, voice = 'lev', actor = 'operator' } = {}) {
+export async function expandPostWithFaq(env, { slug, voice = 'personal', actor = 'operator' } = {}) {
   const startedAt = now();
   const post = await readBlogPost(env, slug);
   if (!post) throw new Error(`post ${slug} not found`);
@@ -395,9 +395,9 @@ export async function expandPostWithFaq(env, { slug, voice = 'lev', actor = 'ope
     const taste = await readTasteProfile(env);
     if (taste) voiceDoc += `\n\n## Operator's learned editorial taste (honor this)\n${taste}`;
   } catch { /* taste optional */ }
-  if (voice === 'lev') {
-    const levDoc = await readKnowledge(env, 'nyyon-voice-lev').catch(() => null);
-    if (levDoc?.body) voiceDoc += `\n\n## WRITE IN LEV'S VOICE\n${levDoc.body}`;
+  if (voice === 'personal' || voice === 'lev') {
+    const personalDoc = await readKnowledge(env, 'operator-voice').catch(() => null);
+    if (personalDoc?.body) voiceDoc += `\n\n## WRITE IN THE OPERATOR'S PERSONAL VOICE\n${personalDoc.body}`;
   }
 
   const prompt = [
@@ -595,11 +595,11 @@ export async function runAeoCron(env, { actor = 'aeo-cron', targetSlug = null, r
       ? `${brandVoiceDoc.body}\n\n## Operator's learned editorial taste (honor this)\n${taste}`
       : brandVoiceDoc.body;
 
-    // Optional per-article voice: 'lev' layers the founder's personal voice on
+    // Optional per-article voice: 'personal' layers the operator's own voice on
     // top of the house voice. Default 'house' = brand voice only.
-    if (freshQ?.voice === 'lev') {
-      const levDoc = await readKnowledge(env, 'nyyon-voice-lev').catch(() => null);
-      if (levDoc?.body) brandVoiceWithTaste += `\n\n## WRITE IN LEV'S VOICE (this article opted in)\n${levDoc.body}`;
+    if (freshQ?.voice === 'personal' || freshQ?.voice === 'lev') {
+      const personalDoc = await readKnowledge(env, 'operator-voice').catch(() => null);
+      if (personalDoc?.body) brandVoiceWithTaste += `\n\n## WRITE IN THE OPERATOR'S PERSONAL VOICE (this article opted in)\n${personalDoc.body}`;
     }
     const cronStyle = await loadStyleRules(env);
     if (cronStyle.text) brandVoiceWithTaste += `\n\n## THE OPERATOR'S WRITING-STYLE RULES (hard bans, mechanically enforced after you write)\n${cronStyle.text}`;

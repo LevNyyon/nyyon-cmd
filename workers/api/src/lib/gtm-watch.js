@@ -182,7 +182,7 @@ async function detectForLead(env, lead, cfg) {
 // soft: a ping with no draft still beats a missed signal.
 async function draftSignalResponse(env, lead, signal) {
   const [you, positioning, rules, mc] = await Promise.all([
-    readYou(env), gtmDoc(env, 'lev-positioning'), gtmDoc(env, 'gtm-outreach'), loadModelConfig(env),
+    readYou(env), gtmDoc(env, 'operator-positioning'), gtmDoc(env, 'gtm-outreach'), loadModelConfig(env),
   ]);
   const system = `You draft ONE WhatsApp message ${you.name || 'the operator'} will personally send to a prospect he already believes is a good fit. The message opens (or reopens) the conversation off a real, current SIGNAL — that signal is the entire reason for reaching out now, so lead with it plainly.
 
