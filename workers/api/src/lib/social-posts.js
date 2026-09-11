@@ -64,7 +64,7 @@ async function draftOne(env, channel, article, voiceBody, { sourceKind = 'blog',
     `RULES:`,
     `- Output ONE post as plain text. No markdown, no headings, no hashtags spam.`,
     isPersonal
-      ? `- First person, as Lev. TEASE one or two conclusions from the article, do NOT summarize the whole thing. Humble close.`
+      ? `- First person, as the operator. TEASE one or two conclusions from the article, do NOT summarize the whole thing. Humble close.`
       : `- Company voice. Confident and concrete, one clear idea, no hype words.`,
     `- Under ${limit} characters total.`,
     `- No exclamation marks. No em-dashes or en-dashes (use commas or plain hyphens).`,

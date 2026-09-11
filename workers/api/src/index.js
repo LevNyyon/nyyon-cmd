@@ -898,7 +898,7 @@ app.post('/api/gtm/signals/:id', async (c) => {
 // by relevance and curate the tracked list. The take on a card reuses the
 // existing /api/li/signals/:id/draft-comment + /comment pair — this module
 // adds no drafting of its own.
-// ─── tasks (daily task list module; updatable by Lev, Nyo, or any agent) ──
+// ─── tasks (daily task list module; updatable by the operator, Nyo, or any agent) ──
 // ─── daily planner (per-day plan + weekly objectives; operator + planner chat) ──
 app.get('/api/daily-plan', async (c) => {
   const date = c.req.query('date') || (await todayLocal(c.env));
