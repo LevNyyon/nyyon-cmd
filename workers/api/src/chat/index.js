@@ -163,7 +163,7 @@ export async function handleChat(env, { messages, conversation_id, tier, agent =
       let errored = false;             // a hard provider error already surfaced to the operator
 
       for (let hop = 0; hop < 8; hop++) {
-        const res = await callLLM(env, convo, tools, activeCfg, personaSystem, null);
+        const res = await callLLM(env, convo, tools, activeCfg, personaSystem, agent === 'daily-planner' ? PLANNER_TOOLS : null);
         if (!res.ok) {
           const errText = await res.text();
           const cls = activeCfg.provider === 'anthropic' ? classifyLlmError(res.status, errText) : null;
@@ -337,6 +337,16 @@ const HOT_TOOLS = new Set([
   // they did not exist, and "confessed" that its own successful saves were
   // fabricated (2026-08-19). Cheap schemas, catastrophic when invisible.
   'hottake_read_package', 'hottake_refine', 'hottake_set_angle', 'hottake_notes',
+]);
+
+// The planning desk's working set: the persona's FIRST instruction is to
+// read today's plan, so these must be visible up front — a deferred tool the
+// model hasn't searched for reads as "I can't plan" (same failure class the
+// hottake wizard tools hit on 2026-08-19).
+const PLANNER_TOOLS = new Set([
+  'read_daily_plan', 'save_daily_plan', 'update_daily_plan',
+  'search_daily_plans', 'list_recent_plans',
+  'read_weekly_objectives', 'set_weekly_objectives',
 ]);
 
 const TOOL_SEARCH = { type: 'tool_search_tool_regex_20251119', name: 'tool_search_tool_regex' };

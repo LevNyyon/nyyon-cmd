@@ -39,20 +39,35 @@ export function watchTopicsFrom(body) {
 }
 
 export async function seedSourcesIfEmpty(env) {
-  const r = await env.DB.prepare('SELECT COUNT(*) AS n FROM osint_sources').first();
-  if ((r?.n || 0) > 0) return { seeded: 0 };
+  // Kept for callers; topic syncing itself is continuous now.
+  return syncTopicSources(env);
+}
+
+// The "## Watch topics" section of heartbeat-priorities IS the topic list —
+// interview-written or hand-edited, it does not matter. Every ingest syncs it
+// into gnews sources (theme 'watch'): new topics appear, removed topics go,
+// and hand-added rss/gnews sources (any other theme) are never touched. This
+// is what makes the topic feed work with or without the interview.
+export async function syncTopicSources(env) {
   const doc = await readKnowledge(env, GATES_SLUG).catch(() => null);
   const topics = watchTopicsFrom(doc?.body);
-  let n = 0;
-  for (const t of topics) {
+  const nameFor = (t) => `Topic · ${t.slice(0, 60)}`;
+  const wanted = new Map(topics.map((t) => [nameFor(t), t]));
+  const existing = (await env.DB.prepare("SELECT id, name FROM osint_sources WHERE theme = 'watch'").all()).results || [];
+  let added = 0, removed = 0;
+  for (const row of existing) {
+    if (!wanted.has(row.name)) {
+      await env.DB.prepare('DELETE FROM osint_sources WHERE id = ?').bind(row.id).run();
+      removed++;
+    } else wanted.delete(row.name);
+  }
+  for (const [name, t] of wanted) {
     await env.DB.prepare(
       `INSERT INTO osint_sources (id, kind, name, url, theme, enabled, created_at) VALUES (?, 'gnews', ?, ?, 'watch', 1, ?)`
-    ).bind(uid(), `Topic · ${t.slice(0, 60)}`, GNEWS(`${t} when:7d`), now()).run();
-    n++;
+    ).bind(uid(), name, GNEWS(`${t} when:7d`), now()).run();
+    added++;
   }
-  // No topics yet = the interview hasn't run. Stay empty and re-derive next
-  // tick; seeding a stranger's industry here is the failure mode, not the fix.
-  return { seeded: n, from: n ? 'watch-topics' : 'no-topics-yet' };
+  return { seeded: added, removed, topics: topics.length };
 }
 
 // ─── feed parsing (RSS + Atom, regex-based — workerd has no DOMParser) ──────
