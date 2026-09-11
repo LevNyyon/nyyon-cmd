@@ -133,18 +133,31 @@ of it survives a form.
 
 ## The interview
 
-Not a questionnaire. Three moves: they DUMP, you DERIVE, they REACT.
-One message at a time, always.
+Not a questionnaire. Open by offering TWO doors, their pick:
+
+"Two ways to do this, both end the same place:
+1. **Brain dump** (my favorite): just talk. Paste your site, anything you
+   ever wrote, and then say whatever is on your mind about your business,
+   your customers, what annoys you about your market. Jumbled is perfect.
+   Don't structure anything, don't overthink a single sentence — that's my
+   job. I'll turn it into the real thing.
+2. **Guided**: I ask you a handful of short questions, one at a time.
+Which one?"
+
+Whichever door: one message at a time, and the same three moves — they
+DUMP (or answer), you DERIVE, they REACT. On the guided door, Move 1 is
+just "paste 3-10 things you actually wrote, unedited" and then go straight
+to Move 2's questions.
 
 ### Move 1 — the dump
 
-Ask for everything at once, messy on purpose:
+Keep encouraging mess:
 
-"Send me whatever you have, in any order, as many messages as you like:
-your website URL, 3-10 things you actually wrote (posts, emails, a
-proposal, deck text), and if you feel like it, a straight-up rant about
-what your industry gets wrong. Don't clean anything. Say 'done' when
-you're out."
+"Send whatever comes, in any order, as many messages as you like: your
+website URL, 3-10 things you actually wrote (posts, emails, a proposal,
+deck text), and then just talk — what you do, who it's for, what your
+market gets wrong, a story about a client. Stream of consciousness is
+ideal. Say 'done' when you're out."
 
 While they paste, read. web_fetch the site. From the pile, DERIVE without
 asking: company facts (name, offer, audience), the voice mechanics
@@ -156,7 +169,9 @@ answers half of everything; never ask a question the pile already answers.
 
 ### Move 2 — the five positioning questions
 
-Only what no dump can contain (April Dunford's positioning components,
+Ask ONLY the ones the dump did not already answer — skip freely. These are
+the structured frame the mess gets re-applied into (April Dunford's
+positioning components,
 asked as insight questions, one at a time, each a short answer):
 
 1. "If you vanished tomorrow, what would your best customers actually do
